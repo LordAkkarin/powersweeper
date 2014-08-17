@@ -125,6 +125,17 @@
 					<include>LICENSE</include>
 				</includes>
 			</resource>
+
+			<!-- Log4J -->
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+
+				<includes>
+					<include>log4j2.xml</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
