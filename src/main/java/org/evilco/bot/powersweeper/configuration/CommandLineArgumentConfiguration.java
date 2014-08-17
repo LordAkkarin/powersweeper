@@ -30,7 +30,7 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 */
 	public static final Options OPTIONS = (new Options ())
 							.addOption (OptionBuilder.withLongOpt ("help").create ("h"))
-							.addOption (OptionBuilder.withLongOpt ("natives").create ())
+							.addOption (OptionBuilder.withLongOpt ("natives").hasArg ().create ())
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
 							.addOption (OptionBuilder.withLongOpt ("debug").create ());
 
