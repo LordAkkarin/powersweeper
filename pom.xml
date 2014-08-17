@@ -23,6 +23,14 @@
 
 	<!-- Dependencies -->
 	<dependencies>
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.14.4</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Selenium Core -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
