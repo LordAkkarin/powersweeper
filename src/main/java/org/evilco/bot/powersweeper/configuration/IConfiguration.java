@@ -15,6 +15,8 @@
 
 package org.evilco.bot.powersweeper.configuration;
 
+import org.evilco.bot.powersweeper.platform.Driver;
+
 import java.io.File;
 
 /**
@@ -22,6 +24,12 @@ import java.io.File;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public interface IConfiguration {
+
+	/**
+	 * Returns the bot driver.
+	 * @return The driver type.
+	 */
+	public Driver getDriver ();
 
 	/**
 	 * Returns the directory which stores the native directories.

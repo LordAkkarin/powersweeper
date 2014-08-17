@@ -18,6 +18,7 @@ package org.evilco.bot.powersweeper.configuration;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.cli.*;
+import org.evilco.bot.powersweeper.platform.Driver;
 
 import java.io.File;
 
@@ -26,6 +27,11 @@ import java.io.File;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class CommandLineArgumentConfiguration implements IConfiguration {
+
+	/**
+	 * Defines the default driver.
+	 */
+	public static final String DEFAULT_DRIVER = "CHROME";
 
 	/**
 	 * Defines the default storage directory for natives.
@@ -39,7 +45,8 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 							.addOption (OptionBuilder.withLongOpt ("help").create ("h"))
 							.addOption (OptionBuilder.withLongOpt ("natives").hasArg ().create ())
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
-							.addOption (OptionBuilder.withLongOpt ("debug").create ());
+							.addOption (OptionBuilder.withLongOpt ("debug").create ())
+							.addOption (OptionBuilder.withLongOpt ("driver").hasArg ().create ());
 
 	/**
 	 * Stores the parsed command line.
@@ -60,8 +67,16 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Driver getDriver () {
+		return (Driver.valueOf ((this.commandLine.hasOption ("driver") ? this.commandLine.getOptionValue ("driver").toUpperCase () : DEFAULT_DRIVER)));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public File getNativeLibraryDirectory () {
-		return (new File ((this.commandLine.hasOption ("natives") ? DEFAULT_NATIVE_DIRECTORY : this.commandLine.getOptionValue ("natives"))));
+		return (new File ((this.commandLine.hasOption ("natives") ? this.commandLine.getOptionValue ("natives") : DEFAULT_NATIVE_DIRECTORY)));
 	}
 
 	/**
