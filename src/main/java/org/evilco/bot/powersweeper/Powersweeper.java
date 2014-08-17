@@ -14,11 +14,22 @@
  */
 package org.evilco.bot.powersweeper;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class Powersweeper {
+
+	/**
+	 * Stores the main logger instance.
+	 */
+	@Getter (AccessLevel.PROTECTED)
+	private static final Logger logger = LogManager.getLogger (Powersweeper.class);
 
 	/**
 	 * Main Entry Point
