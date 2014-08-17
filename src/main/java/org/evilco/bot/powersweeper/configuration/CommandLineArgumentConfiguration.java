@@ -19,11 +19,18 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.cli.*;
 
+import java.io.File;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class CommandLineArgumentConfiguration implements IConfiguration {
+
+	/**
+	 * Defines the default storage directory for natives.
+	 */
+	public static final String DEFAULT_NATIVE_DIRECTORY = "natives/";
 
 	/**
 	 * Defines valid command line options.
@@ -53,8 +60,24 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public File getNativeLibraryDirectory () {
+		return (new File ((this.commandLine.hasOption ("natives") ? DEFAULT_NATIVE_DIRECTORY : this.commandLine.getOptionValue ("natives"))));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isDebugEnabled () {
 		return this.commandLine.hasOption ("debug");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isNativeDownloadEnabled () {
+		return !this.commandLine.hasOption ("nonativedownload");
 	}
 
 	/**

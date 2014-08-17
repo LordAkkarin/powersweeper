@@ -15,6 +15,8 @@
 
 package org.evilco.bot.powersweeper.configuration;
 
+import java.io.File;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
@@ -22,8 +24,20 @@ package org.evilco.bot.powersweeper.configuration;
 public interface IConfiguration {
 
 	/**
+	 * Returns the directory which stores the native directories.
+	 * @return The directory reference.
+	 */
+	public File getNativeLibraryDirectory ();
+
+	/**
 	 * Checks whether debugging is enabled.
 	 * @return True if debugging is enabled.
 	 */
 	public boolean isDebugEnabled ();
+
+	/**
+	 * Checks whether native automatic download of native libraries is enabled.
+	 * @return True if download is enabled.
+	 */
+	public boolean isNativeDownloadEnabled ();
 }
