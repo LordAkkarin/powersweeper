@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2014 Johannes Donath <johannesd@evil-co.com>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ 	http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project version="4">
+	<component name="ProjectCodeStyleSettingsManager">
+		<option name="PER_PROJECT_SETTINGS">
+			<value>
+				<option name="OTHER_INDENT_OPTIONS">
+					<value>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="CONTINUATION_INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+						<option name="SMART_TABS" value="false"/>
+						<option name="LABEL_INDENT_SIZE" value="0"/>
+						<option name="LABEL_INDENT_ABSOLUTE" value="false"/>
+						<option name="USE_RELATIVE_INDENTS" value="false"/>
+					</value>
+				</option>
+				<option name="HTML_KEEP_WHITESPACES" value="true"/>
+				<option name="HTML_ATTRIBUTE_WRAP" value="0"/>
+				<option name="HTML_ALIGN_ATTRIBUTES" value="false"/>
+				<option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true"/>
+				<JSCodeStyleSettings>
+					<option name="ALIGN_OBJECT_PROPERTIES" value="1"/>
+				</JSCodeStyleSettings>
+				<XML>
+					<option name="XML_LEGACY_SETTINGS_IMPORTED" value="true"/>
+				</XML>
+				<codeStyleSettings language="CSS">
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="Groovy">
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+						<option name="LABEL_INDENT_SIZE" value="8"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="HTML">
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="JAVA">
+					<option name="KEEP_LINE_BREAKS" value="false"/>
+					<option name="KEEP_FIRST_COLUMN_COMMENT" value="false"/>
+					<option name="ALIGN_MULTILINE_THROWS_LIST" value="true"/>
+					<option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true"/>
+					<option name="SPACE_BEFORE_METHOD_CALL_PARENTHESES" value="true"/>
+					<option name="SPACE_BEFORE_METHOD_PARENTHESES" value="true"/>
+					<option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true"/>
+					<option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true"/>
+					<option name="SPACE_BEFORE_ANOTATION_PARAMETER_LIST" value="true"/>
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="JavaScript">
+					<option name="SPACE_BEFORE_METHOD_CALL_PARENTHESES" value="true"/>
+					<option name="SPACE_BEFORE_METHOD_PARENTHESES" value="true"/>
+					<option name="KEEP_SIMPLE_BLOCKS_IN_ONE_LINE" value="true"/>
+					<option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true"/>
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="CONTINUATION_INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="LESS">
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+				<codeStyleSettings language="XML">
+					<indentOptions>
+						<option name="INDENT_SIZE" value="8"/>
+						<option name="TAB_SIZE" value="8"/>
+						<option name="USE_TAB_CHARACTER" value="true"/>
+					</indentOptions>
+				</codeStyleSettings>
+			</value>
+		</option>
+		<option name="USE_PER_PROJECT_SETTINGS" value="true"/>
+	</component>
+</project>
+

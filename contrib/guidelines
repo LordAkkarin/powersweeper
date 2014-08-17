@@ -1,0 +1,13 @@
+Code Guidelines
+===============
+The following guidelines apply to all contributions. Pull requests which contain badly formatted code will not be
+accepted so please ensure your code is formatted accordingly:
+
+ * Tab-Only indentation (width: 8)
+ * A whitespace in front of all parenthesis (for both calls and definitions)
+ * Try to keep the indentation as low as possible (using return and continue statements to end methods/loops early on
+ is recommended)
+ * Statements should not be split into multiple lines (statements which become unreadable should be split into multiple
+ steps)
+
+IntelliJ users may use the `codeStyleSettings.xml` within the `contrib` directory.
