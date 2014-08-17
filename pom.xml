@@ -12,6 +12,11 @@
 	<description>Sweeps the hell out of your mines.</description>
 	<inceptionYear>2014</inceptionYear>
 
+	<!-- Build Properties -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<!-- Dependencies -->
 	<dependencies>
 		<!-- Selenium Core -->
