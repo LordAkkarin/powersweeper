@@ -42,6 +42,14 @@ public interface IChunk {
 	public FieldType getField (int x, int y);
 
 	/**
+	 * Returns the uncovered value (the numeric value) of a field.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @return The uncovered value.
+	 */
+	public short getUncoveredValue (int x, int y);
+
+	/**
 	 * Sets the field at location X, Y.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
