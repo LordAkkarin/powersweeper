@@ -16,8 +16,14 @@ package org.evilco.bot.powersweeper;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
+import org.evilco.bot.powersweeper.configuration.IConfiguration;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -32,10 +38,51 @@ public class Powersweeper {
 	private static final Logger logger = LogManager.getLogger (Powersweeper.class);
 
 	/**
+	 * Constructs a new Powersweeper instance.
+	 * @param configuration The application configuration.
+	 */
+	public Powersweeper (IConfiguration configuration) {
+		getLogger ().info ("Powersweeper");
+		getLogger ().info ("Copyright (C) 2014 Evil-Co <http://www.evil-co.org>");
+		getLogger ().info ("---------------------------------------------------");
+
+		// enable debug logging
+		if (configuration.isDebugEnabled ()) {
+			// get context & configuration
+			LoggerContext context = ((LoggerContext) LogManager.getContext (false));
+			Configuration config = context.getConfiguration ();
+
+			// set new level
+			config.getLoggerConfig (LogManager.ROOT_LOGGER_NAME).setLevel (Level.ALL);
+
+			// update context
+			context.updateLoggers (config);
+		}
+
+		// test logging
+		getLogger ().debug ("Debug logging enabled");
+	}
+
+	/**
 	 * Main Entry Point
 	 * @param arguments The arguments.
 	 */
 	public static void main (String[] arguments) {
+		try {
+			// parse configuration
+			CommandLineArgumentConfiguration configuration = new CommandLineArgumentConfiguration (arguments);
 
+			// check for help argument
+			if (configuration.getCommandLine ().hasOption ("help")) {
+				CommandLineArgumentConfiguration.printHelp ();
+				System.exit (0);
+			}
+
+			// create bot instance
+			Powersweeper powersweeper = new Powersweeper (configuration);
+		} catch (ParseException ex) {
+			CommandLineArgumentConfiguration.printHelp ();
+			System.exit (-1);
+		}
 	}
 }
