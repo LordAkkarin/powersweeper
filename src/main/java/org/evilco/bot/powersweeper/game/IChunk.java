@@ -39,7 +39,7 @@ public interface IChunk {
 	 * @param y The Y-Coordinate.
 	 * @return The current field type.
 	 */
-	public FieldType getField (int x, int y);
+	public FieldType getField (short x, short y);
 
 	/**
 	 * Returns the uncovered value (the numeric value) of a field.
@@ -47,7 +47,7 @@ public interface IChunk {
 	 * @param y The Y-Coordinate.
 	 * @return The uncovered value.
 	 */
-	public short getUncoveredValue (int x, int y);
+	public short getUncoveredValue (short x, short y);
 
 	/**
 	 * Resets the chunk information.
@@ -60,7 +60,7 @@ public interface IChunk {
 	 * @param y The Y-Coordinate.
 	 * @param fieldType The new field type.
 	 */
-	public void setField (int x, int y, FieldType fieldType);
+	public void setField (short x, short y, FieldType fieldType);
 
 	/**
 	 * Sets the field value.
@@ -68,5 +68,5 @@ public interface IChunk {
 	 * @param y The Y-Coordinate.
 	 * @param value The new value.
 	 */
-	public void setValue (int x, int y, short value);
+	public void setValue (short x, short y, short value);
 }
