@@ -15,6 +15,7 @@
 
 package org.evilco.bot.powersweeper.configuration;
 
+import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.platform.Driver;
 
 import java.io.File;
@@ -24,6 +25,13 @@ import java.io.File;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public interface IConfiguration {
+
+	/**
+	 * Returns the brain class.
+	 * @return The class.
+	 * @throws ClassNotFoundException
+	 */
+	public Class<? extends IBrain> getBrainClass () throws ClassNotFoundException;
 
 	/**
 	 * Returns the bot driver.

@@ -18,6 +18,7 @@ package org.evilco.bot.powersweeper.configuration;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.cli.*;
+import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.platform.Driver;
 
 import java.io.File;
@@ -27,6 +28,11 @@ import java.io.File;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class CommandLineArgumentConfiguration implements IConfiguration {
+
+	/**
+	 * Defines the default brain.
+	 */
+	public static final String DEFAULT_BRAIN = "org.evilco.bot.powersweeper.brain.IdiotBrain";
 
 	/**
 	 * Defines the default driver.
@@ -42,6 +48,7 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 * Defines valid command line options.
 	 */
 	public static final Options OPTIONS = (new Options ())
+							.addOption (OptionBuilder.withLongOpt ("brain").create ("b"))
 							.addOption (OptionBuilder.withLongOpt ("help").create ("h"))
 							.addOption (OptionBuilder.withLongOpt ("natives").hasArg ().create ())
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
@@ -61,6 +68,14 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 */
 	public CommandLineArgumentConfiguration (@NonNull String[] arguments) throws ParseException {
 		this.commandLine = (new PosixParser ()).parse (OPTIONS, arguments);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Class<? extends IBrain> getBrainClass () throws ClassNotFoundException {
+		return Class.forName ((this.commandLine.hasOption ("brain") ? this.commandLine.getOptionValue ("brain") : DEFAULT_BRAIN)).asSubclass (IBrain.class);
 	}
 
 	/**
