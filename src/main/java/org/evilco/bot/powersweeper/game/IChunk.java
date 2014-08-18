@@ -61,4 +61,12 @@ public interface IChunk {
 	 * @param fieldType The new field type.
 	 */
 	public void setField (int x, int y, FieldType fieldType);
+
+	/**
+	 * Sets the field value.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @param value The new value.
+	 */
+	public void setValue (int x, int y, short value);
 }
