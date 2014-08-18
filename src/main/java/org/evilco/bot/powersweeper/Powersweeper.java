@@ -26,6 +26,8 @@ import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguratio
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
 import org.evilco.bot.powersweeper.platform.DriverManager;
 
+import java.util.Random;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
@@ -86,6 +88,9 @@ public class Powersweeper {
 
 		// start driver
 		this.driverManager = new DriverManager (configuration);
+
+		// download natives
+		this.driverManager.downloadNatives ();
 	}
 
 	/**
@@ -118,6 +123,18 @@ public class Powersweeper {
 	 * Starts thinking.
 	 */
 	public void think () {
+		// store new state
 		this.alive = true;
+
+		// initialize drivers
+		this.driverManager.initializeDriver ();
+
+		// generate initial coordinates
+		Random random = new Random (); // no need for secure random here
+		int x = (1337 + random.nextInt (3000));
+		int y = (1337 + random.nextInt (3000));
+
+		// request website
+		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
 	}
 }
