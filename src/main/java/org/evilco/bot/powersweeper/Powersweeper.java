@@ -91,6 +91,9 @@ public class Powersweeper {
 
 		// download natives
 		this.driverManager.downloadNatives ();
+
+		// trace
+		getLogger ().exit ();
 	}
 
 	/**
@@ -123,6 +126,8 @@ public class Powersweeper {
 	 * Starts thinking.
 	 */
 	public void think () {
+		getLogger ().entry ();
+
 		// store new state
 		this.alive = true;
 
@@ -136,5 +141,8 @@ public class Powersweeper {
 
 		// request website
 		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
+
+		// trace
+		getLogger ().exit ();
 	}
 }
