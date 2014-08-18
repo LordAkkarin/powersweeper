@@ -24,12 +24,31 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
+import org.evilco.bot.powersweeper.platform.DriverManager;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class Powersweeper {
+
+	/**
+	 * Indicates whether the bot is alive.
+	 */
+	@Getter
+	private boolean alive = false;
+
+	/**
+	 * Stores the application configuration.
+	 */
+	@Getter (AccessLevel.PROTECTED)
+	private IConfiguration configuration = null;
+
+	/**
+	 * Stores the driver manager.
+	 */
+	@Getter (AccessLevel.PROTECTED)
+	private DriverManager driverManager = null;
 
 	/**
 	 * Stores the main logger instance.
@@ -59,8 +78,14 @@ public class Powersweeper {
 			context.updateLoggers (config);
 		}
 
+		// store configuration
+		this.configuration = configuration;
+
 		// test logging
 		getLogger ().debug ("Debug logging enabled");
+
+		// start driver
+		this.driverManager = new DriverManager (configuration);
 	}
 
 	/**
@@ -80,9 +105,19 @@ public class Powersweeper {
 
 			// create bot instance
 			Powersweeper powersweeper = new Powersweeper (configuration);
+
+			// execute
+			powersweeper.think ();
 		} catch (ParseException ex) {
 			CommandLineArgumentConfiguration.printHelp ();
 			System.exit (-1);
 		}
+	}
+
+	/**
+	 * Starts thinking.
+	 */
+	public void think () {
+		this.alive = true;
 	}
 }
