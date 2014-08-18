@@ -22,5 +22,6 @@ package org.evilco.bot.powersweeper.game;
 public enum FieldType {
 	UNTOUCHED,
 	FLAGGED,
-	UNCOVERED
+	UNCOVERED,
+	BOMB
 }
