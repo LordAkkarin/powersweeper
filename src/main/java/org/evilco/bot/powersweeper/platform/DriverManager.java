@@ -18,7 +18,16 @@ package org.evilco.bot.powersweeper.platform;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.File;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -33,10 +42,75 @@ public class DriverManager {
 	private IConfiguration configuration;
 
 	/**
+	 * Stores the web driver.
+	 */
+	@Getter
+	private WebDriver driver = null;
+
+	/**
+	 * Stores the internal logger instance.
+	 */
+	@Getter (AccessLevel.PROTECTED)
+	public static final Logger logger = LogManager.getLogger (DriverManager.class);
+
+	/**
 	 * Constructs a new DriverManager instance.
 	 * @param configuration The configuration.
 	 */
 	public DriverManager (@NonNull IConfiguration configuration) {
 		this.configuration = configuration;
+	}
+
+	/**
+	 * Returns the driver file.
+	 * @return The driver file.
+	 */
+	public File getDriverNativeFile () {
+		// create builder
+		StringBuilder builder = new StringBuilder ("chromedriver");
+
+		// append extension
+		if (Platform.guessPlatform () == Platform.WINDOWS) builder.append (".exe");
+
+		// return finished path
+		return (new File (this.configuration.getNativeLibraryDirectory (), builder.toString ()));
+	}
+
+	/**
+	 * Initializes the web driver.
+	 */
+	public void initializeDriver () {
+		getLogger ().entry ();
+
+		// prepare capabilities
+		DesiredCapabilities capabilities = new DesiredCapabilities ();
+		capabilities.setJavascriptEnabled (true);
+
+		// prepare driver
+		switch (this.configuration.getDriver ()) {
+			case CHROME:
+				// set driver path
+				System.setProperty ("webdriver.chrome.driver", this.getDriverNativeFile ().getAbsolutePath ());
+
+				// start driver
+				this.driver = new ChromeDriver (capabilities);
+				break;
+			case FIREFOX:
+				this.driver = new FirefoxDriver (capabilities);
+				break;
+		}
+
+		// debug log
+		getLogger ().info ("Loaded driver of type " + this.driver.getClass ().getName () + ".");
+
+		// trace
+		getLogger ().exit ();
+	}
+
+	/**
+	 * Downloads all natives.
+	 */
+	public void downloadNatives () {
+		getLogger ().warn ("Automatic download of natives is currently not available.");
 	}
 }
