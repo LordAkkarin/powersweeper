@@ -50,6 +50,11 @@ public interface IChunk {
 	public short getUncoveredValue (int x, int y);
 
 	/**
+	 * Resets the chunk information.
+	 */
+	public void reset ();
+
+	/**
 	 * Sets the field at location X, Y.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
