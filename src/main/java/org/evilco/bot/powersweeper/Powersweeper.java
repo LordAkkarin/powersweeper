@@ -41,13 +41,13 @@ public class Powersweeper {
 	/**
 	 * Stores the application configuration.
 	 */
-	@Getter (AccessLevel.PROTECTED)
+	@Getter
 	private IConfiguration configuration = null;
 
 	/**
 	 * Stores the driver manager.
 	 */
-	@Getter (AccessLevel.PROTECTED)
+	@Getter
 	private DriverManager driverManager = null;
 
 	/**
