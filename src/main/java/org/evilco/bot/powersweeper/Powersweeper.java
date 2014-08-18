@@ -26,13 +26,25 @@ import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguratio
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
 import org.evilco.bot.powersweeper.platform.DriverManager;
 
+import java.security.SecureRandom;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class Powersweeper {
+
+	/**
+	 * Stores the maximum amount of time stored for calculating averages.
+	 */
+	public static final int AVERAGE_ACCURACY = 15;
+
+	/**
+	 * Defines the minimum average wait time.
+	 */
+	public static final long WAIT_TIME_THRESHOLD = 800;
 
 	/**
 	 * Indicates whether the bot is alive.
@@ -57,6 +69,11 @@ public class Powersweeper {
 	 */
 	@Getter (AccessLevel.PROTECTED)
 	private static final Logger logger = LogManager.getLogger (Powersweeper.class);
+
+	/**
+	 * Stores a stack for keeping track of wait times.
+	 */
+	private Stack<Long> timeStack = new Stack<> ();
 
 	/**
 	 * Constructs a new Powersweeper instance.
@@ -94,6 +111,36 @@ public class Powersweeper {
 
 		// trace
 		getLogger ().exit ();
+	}
+
+	/**
+	 * Adds a new wait time to stack.
+	 * @param time The time.
+	 */
+	protected void addWaitTime (long time) {
+		// add to stack
+		this.timeStack.add (time);
+
+		// check maximum
+		if (this.timeStack.size () > AVERAGE_ACCURACY) this.timeStack.remove (0);
+	}
+
+	/**
+	 * Returns the average wait time.
+	 * @return The average time.
+	 */
+	protected long getAverageWaitTime () {
+		// no data available?
+		if (this.timeStack.size () == 0) return 0;
+
+		// initialize
+		long time = 0;
+
+		// add up all times
+		for (long current : this.timeStack) time += current;
+
+		// calculate average
+		return (time / this.timeStack.size ());
 	}
 
 	/**
@@ -135,12 +182,64 @@ public class Powersweeper {
 		this.driverManager.initializeDriver ();
 
 		// generate initial coordinates
-		Random random = new Random (); // no need for secure random here
+		Random random = new SecureRandom ();
 		int x = (1337 + random.nextInt (3000));
 		int y = (1337 + random.nextInt (3000));
 
 		// request website
 		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
+
+		// wait for web
+		getLogger ().info ("Waiting a few seconds for web to become ready ...");
+
+		try {
+			Thread.sleep (6000);
+		} catch (InterruptedException ex) {
+			getLogger ().warn ("Our sleep was interrupted by aliens: " + ex.getMessage (), ex);
+		}
+
+		getLogger ().info ("Proceeding with processing.");
+
+		// enter main loop
+		while (this.alive) {
+			// trace
+			getLogger ().trace ("Entering processing loop.");
+
+			// process screen
+			// TODO
+
+			// call AI
+			// TODO
+
+			// wait for some time
+			try {
+				// initialize variables
+				long waitTime;
+
+				// get current average
+				long average = this.getAverageWaitTime ();
+
+				// get wait time depending on current average
+				if (average < WAIT_TIME_THRESHOLD)
+					waitTime = (2000 + random.nextInt (15000));
+				else
+					waitTime = (250 + random.nextInt (1500));
+
+				// append time
+				this.addWaitTime (waitTime);
+
+				// trace
+				getLogger ().trace ("Waiting for " + waitTime + " ms to ensure we're not being detected (average is " + average + " ms).");
+
+				// sleep
+				Thread.sleep (waitTime);
+			} catch (InterruptedException ex) {
+				getLogger ().warn ("Our sleep was interrupted by aliens: " + ex.getMessage (), ex);
+			}
+
+			// trace
+			getLogger ().trace ("Exiting processing loop.");
+		}
 
 		// trace
 		getLogger ().exit ();
