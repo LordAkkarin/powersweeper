@@ -23,5 +23,6 @@ public enum FieldState {
 	UNTOUCHED,
 	FLAGGED,
 	UNCOVERED,
+	NUMBER,
 	BOMB
 }
