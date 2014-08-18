@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
 import org.evilco.bot.powersweeper.platform.DriverManager;
@@ -51,6 +52,12 @@ public class Powersweeper {
 	 */
 	@Getter
 	private boolean alive = false;
+
+	/**
+	 * Stores the currently active brain instance.
+	 */
+	@Getter
+	private IBrain brain = null;
 
 	/**
 	 * Stores the application configuration.
@@ -180,6 +187,17 @@ public class Powersweeper {
 
 		// initialize drivers
 		this.driverManager.initializeDriver ();
+
+		// initialize brain
+		try {
+			this.brain = this.configuration.getBrainClass ().newInstance ();
+		} catch (Exception ex) {
+			// log
+			getLogger ().error ("Could not load brain implementation: " + ex.getMessage (), ex);
+
+			// exit
+			System.exit (-10);
+		}
 
 		// generate initial coordinates
 		Random random = new SecureRandom ();
