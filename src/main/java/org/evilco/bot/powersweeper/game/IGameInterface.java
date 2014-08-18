@@ -37,6 +37,14 @@ public interface IGameInterface {
 	public void move (long x, long y);
 
 	/**
+	 * Uncovers a field.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @return True if the field was uncovered.
+	 */
+	public boolean uncoverField (short x, short y);
+
+	/**
 	 * Updates the screen.
 	 * @return The current chunk instance.
 	 */
