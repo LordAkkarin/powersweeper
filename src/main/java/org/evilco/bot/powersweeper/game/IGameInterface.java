@@ -22,6 +22,14 @@ package org.evilco.bot.powersweeper.game;
 public interface IGameInterface {
 
 	/**
+	 * Flags a field.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @return True if the field was flagged.
+	 */
+	public boolean flagField (short x, short y);
+
+	/**
 	 * Moves the screen towards a new chunk.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
