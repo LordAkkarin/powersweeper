@@ -177,6 +177,27 @@ public class Powersweeper {
 	}
 
 	/**
+	 * Moves the browser to a specific position.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 */
+	public void movePosition (long x, long y) {
+		// request website
+		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
+
+		// wait for web
+		getLogger ().info ("Waiting a few seconds for web to become ready ...");
+
+		try {
+			Thread.sleep (6000);
+		} catch (InterruptedException ex) {
+			getLogger ().warn ("Our sleep was interrupted by aliens: " + ex.getMessage (), ex);
+		}
+
+		getLogger ().info ("Finished moving to coordinates " + x + "," + y + ".");
+	}
+
+	/**
 	 * Starts thinking.
 	 */
 	public void think () {
@@ -204,19 +225,8 @@ public class Powersweeper {
 		int x = (1337 + random.nextInt (3000));
 		int y = (1337 + random.nextInt (3000));
 
-		// request website
-		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
-
-		// wait for web
-		getLogger ().info ("Waiting a few seconds for web to become ready ...");
-
-		try {
-			Thread.sleep (6000);
-		} catch (InterruptedException ex) {
-			getLogger ().warn ("Our sleep was interrupted by aliens: " + ex.getMessage (), ex);
-		}
-
-		getLogger ().info ("Proceeding with processing.");
+		// move
+		this.movePosition (x, y);
 
 		// enter main loop
 		while (this.alive) {
