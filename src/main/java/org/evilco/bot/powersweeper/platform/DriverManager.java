@@ -106,12 +106,15 @@ public class DriverManager {
 				break;
 		}
 
-		// debug log
+		// log
 		getLogger ().info ("Loaded driver of type " + this.driver.getClass ().getName () + ".");
-		getLogger ().info ("Setting window properties.");
+		getLogger ().info ("Setting window properties ...");
 
 		// set window dimension
 		this.driver.manage ().window ().setSize (WINDOW_DIMENSIONS);
+
+		// log
+		getLogger ().info ("Browser is ready for operations.");
 
 		// trace
 		getLogger ().exit ();
@@ -121,6 +124,12 @@ public class DriverManager {
 	 * Downloads all natives.
 	 */
 	public void downloadNatives () {
+		getLogger ().entry ();
+
+		// TODO
 		getLogger ().warn ("Automatic download of natives is currently not available.");
+
+		// trace
+		getLogger ().exit ();
 	}
 }
