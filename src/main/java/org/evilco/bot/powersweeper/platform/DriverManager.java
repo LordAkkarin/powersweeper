@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -34,6 +35,11 @@ import java.io.File;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 public class DriverManager {
+
+	/**
+	 * Defines the default window dimensions.
+	 */
+	public static final Dimension WINDOW_DIMENSIONS = new Dimension (800, 600);
 
 	/**
 	 * Stores the application configuration.
@@ -102,6 +108,10 @@ public class DriverManager {
 
 		// debug log
 		getLogger ().info ("Loaded driver of type " + this.driver.getClass ().getName () + ".");
+		getLogger ().info ("Setting window properties.");
+
+		// set window dimension
+		this.driver.manage ().window ().setSize (WINDOW_DIMENSIONS);
 
 		// trace
 		getLogger ().exit ();
