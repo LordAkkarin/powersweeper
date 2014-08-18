@@ -39,7 +39,7 @@ public interface IChunk {
 	 * @param y The Y-Coordinate.
 	 * @return The current field type.
 	 */
-	public FieldType getField (short x, short y);
+	public FieldState getField (short x, short y);
 
 	/**
 	 * Returns the uncovered value (the numeric value) of a field.
@@ -58,9 +58,9 @@ public interface IChunk {
 	 * Sets the field at location X, Y.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
-	 * @param fieldType The new field type.
+	 * @param fieldState The new field type.
 	 */
-	public void setField (short x, short y, FieldType fieldType);
+	public void setField (short x, short y, FieldState fieldState);
 
 	/**
 	 * Sets the field value.

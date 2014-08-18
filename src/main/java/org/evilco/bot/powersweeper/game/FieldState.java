@@ -19,7 +19,7 @@ package org.evilco.bot.powersweeper.game;
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public enum FieldType {
+public enum FieldState {
 	UNTOUCHED,
 	FLAGGED,
 	UNCOVERED,
