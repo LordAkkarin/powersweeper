@@ -27,4 +27,10 @@ public interface IGameInterface {
 	 * @param y The Y-Coordinate.
 	 */
 	public void move (long x, long y);
+
+	/**
+	 * Updates the screen.
+	 * @return The current chunk instance.
+	 */
+	public IChunk update ();
 }
