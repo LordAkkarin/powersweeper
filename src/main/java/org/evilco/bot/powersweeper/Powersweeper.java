@@ -129,7 +129,7 @@ public class Powersweeper {
 	 * Returns the average wait time.
 	 * @return The average time.
 	 */
-	protected long getAverageWaitTime () {
+	public long getAverageWaitTime () {
 		// no data available?
 		if (this.timeStack.size () == 0) return 0;
 
