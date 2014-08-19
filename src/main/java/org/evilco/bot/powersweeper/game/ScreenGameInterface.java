@@ -148,7 +148,7 @@ public class ScreenGameInterface implements IGameInterface {
 		if (this.currentChunk.getField (x, y) != FieldState.UNTOUCHED) return getLogger ().exit (false);
 
 		// find HTML coordinate
-		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.name ("html"));
+		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
 
 		// build action
 		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
@@ -424,7 +424,7 @@ public class ScreenGameInterface implements IGameInterface {
 		if (this.currentChunk.getField (x, y) != FieldState.UNTOUCHED) return getLogger ().exit (false);
 
 		// find HTML coordinate
-		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.name ("html"));
+		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
 
 		// build action
 		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
