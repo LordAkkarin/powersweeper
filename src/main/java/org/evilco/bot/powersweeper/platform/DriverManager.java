@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -96,6 +97,14 @@ public class DriverManager {
 
 		// return finished path
 		return (new File (this.configuration.getNativeLibraryDirectory (), builder.toString ()));
+	}
+
+	/**
+	 * Returns an executor version of the current driver.
+	 * @return The executor.
+	 */
+	public JavascriptExecutor getExecutor () {
+		return ((JavascriptExecutor) this.driver);
 	}
 
 	/**
