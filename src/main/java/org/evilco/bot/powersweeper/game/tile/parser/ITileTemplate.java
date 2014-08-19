@@ -13,19 +13,24 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
-
-import org.evilco.bot.powersweeper.game.IGameInterface;
+package org.evilco.bot.powersweeper.game.tile.parser;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+public interface ITileTemplate {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Returns the template name.
+	 * @return The template name.
 	 */
-	public void think (IGameInterface gameInterface);
+	public String getName ();
+
+	/**
+	 * Checks whether two templates match.
+	 * @param template2 The template.
+	 * @return True if the templates match.
+	 */
+	public boolean matches (ITileTemplate template2);
 }

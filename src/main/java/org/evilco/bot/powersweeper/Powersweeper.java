@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
-import org.evilco.bot.powersweeper.game.IChunk;
+import org.evilco.bot.powersweeper.game.ChunkLocation;
 import org.evilco.bot.powersweeper.game.IGameInterface;
 import org.evilco.bot.powersweeper.game.ScreenGameInterface;
 import org.evilco.bot.powersweeper.platform.DriverManager;
@@ -189,27 +189,6 @@ public class Powersweeper {
 	}
 
 	/**
-	 * Moves the browser to a specific position.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 */
-	public void movePosition (long x, long y) {
-		// request website
-		this.driverManager.getDriver ().get ("http://mienfield.com/" + x + "_" + y); // TODO: We might want to roll our own service for this project
-
-		// wait for web
-		getLogger ().info ("Waiting a few seconds for web to become ready ...");
-
-		try {
-			Thread.sleep (6000);
-		} catch (InterruptedException ex) {
-			getLogger ().warn ("Our sleep was interrupted by aliens: " + ex.getMessage (), ex);
-		}
-
-		getLogger ().info ("Finished moving to coordinates " + x + "," + y + ".");
-	}
-
-	/**
 	 * Starts thinking.
 	 */
 	public void think () {
@@ -243,18 +222,18 @@ public class Powersweeper {
 		if (y == null) y = ((long) (1337 + random.nextInt (3000)));
 
 		// move
-		this.gameInterface.move (x, y);
+		this.gameInterface.moveToChunk (new ChunkLocation (x, y));
 
 		// enter main loop
 		while (this.alive) {
 			// trace
 			getLogger ().trace ("Entering processing loop.");
 
-			// process screen
-			IChunk currentChunk = this.gameInterface.update ();
+			// update interface
+			this.gameInterface.update ();
 
 			// call AI
-			this.brain.think (currentChunk, this.gameInterface);
+			this.brain.think (this.gameInterface);
 
 			// wait for some time
 			try {

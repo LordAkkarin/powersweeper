@@ -13,19 +13,17 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
-
-import org.evilco.bot.powersweeper.game.IGameInterface;
+package org.evilco.bot.powersweeper.game.tile;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+public interface ITile {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Returns the tile location.
+	 * @return The location.
 	 */
-	public void think (IGameInterface gameInterface);
+	public TileLocation getLocation ();
 }

@@ -16,8 +16,6 @@
 package org.evilco.bot.powersweeper.brain;
 
 import lombok.Getter;
-import lombok.NonNull;
-import org.evilco.bot.powersweeper.game.IChunk;
 import org.evilco.bot.powersweeper.game.IGameInterface;
 
 /**
@@ -37,12 +35,9 @@ public class DumpBrain extends IdiotBrain {
 	@Getter
 	private int counter = 0;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void think (@NonNull IChunk chunk, @NonNull IGameInterface gameInterface) {
-		super.think (chunk, gameInterface);
+	public void think (IGameInterface gameInterface) {
+		super.think (gameInterface);
 
 		// update counter
 		this.counter++;
@@ -56,7 +51,7 @@ public class DumpBrain extends IdiotBrain {
 			getLogger ().info ("Finished current field. Moving on.");
 
 			// move field
-			gameInterface.move ((chunk.getChunkX () + 1), chunk.getChunkY ());
+			gameInterface.moveToChunk (gameInterface.getChunk ().getLocation ().getRelative (1, 0));
 
 			// reset counter
 			this.counter = 0;

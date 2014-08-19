@@ -13,19 +13,31 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
+package org.evilco.bot.powersweeper.game.tile.parser;
 
-import org.evilco.bot.powersweeper.game.IGameInterface;
+import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.evilco.bot.powersweeper.game.tile.error.TileException;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+public interface ITileParser {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Returns a tile template.
+	 * @param name The template name.
+	 * @return The template.
 	 */
-	public void think (IGameInterface gameInterface);
+	public ITileTemplate getTemplate (String name);
+
+	/**
+	 * Parses a tile.
+	 * @param sourceTile The source tile.
+	 * @param location The tile location.
+	 * @return The tile.
+	 * @throws TileException Occurs if a tile could not be parsed properly.
+	 */
+	public ITile parse (ITileTemplate sourceTile, TileLocation location) throws TileException;
 }

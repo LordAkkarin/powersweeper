@@ -13,19 +13,25 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
+package org.evilco.bot.powersweeper.game.tile.generic;
 
-import org.evilco.bot.powersweeper.game.IGameInterface;
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+public class BombTile extends AbstractTile {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Constructs a new BombTile instance.
+	 * @param location The tile location.
+	 * @param template The tile template.
+	 * @param parser The tile parser.
 	 */
-	public void think (IGameInterface gameInterface);
+	public BombTile (TileLocation location, ITileTemplate template, ITileParser parser) {
+		super (location, template, parser);
+	}
 }

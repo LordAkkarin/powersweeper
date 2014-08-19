@@ -13,19 +13,43 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
-
-import org.evilco.bot.powersweeper.game.IGameInterface;
+package org.evilco.bot.powersweeper.error;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+public abstract class SweeperException extends Exception {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Constructs a new SweeperException instance.
 	 */
-	public void think (IGameInterface gameInterface);
+	public SweeperException () {
+		super ();
+	}
+
+	/**
+	 * Constructs a new SweeperException instance.
+	 * @param message The error message.
+	 */
+	public SweeperException (String message) {
+		super (message);
+	}
+
+	/**
+	 * Constructs a new SweeperException instance.
+	 * @param message The error message.
+	 * @param cause The error cause.
+	 */
+	public SweeperException (String message, Throwable cause) {
+		super (message, cause);
+	}
+
+	/**
+	 * Constructs a new SweeperException instance.
+	 * @param cause The error cause.
+	 */
+	public SweeperException (Throwable cause) {
+		super (cause);
+	}
 }

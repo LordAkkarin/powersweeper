@@ -15,13 +15,19 @@
 
 package org.evilco.bot.powersweeper.game;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.evilco.bot.powersweeper.Powersweeper;
+import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.evilco.bot.powersweeper.game.tile.error.TileException;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
+import org.evilco.bot.powersweeper.game.tile.parser.image.ImageTileParser;
+import org.evilco.bot.powersweeper.game.tile.parser.image.ImageTileTemplate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -31,451 +37,244 @@ import org.openqa.selenium.interactions.Actions;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
+@RequiredArgsConstructor
 public class ScreenGameInterface implements IGameInterface {
+
+	/**
+	 * Defines the border width.
+	 */
+	private static final int BORDER_WIDTH = 2;
 
 	/**
 	 * Defines the cell size.
 	 */
-	public static final short CELL_SIZE = 32;
+	private static final int CELL_SIZE = 32;
 
 	/**
-	 * Stores the bomb tile.
+	 * Defines the game URL template.
 	 */
-	public static final BufferedImage TILE_BOMB;
+	public static final String GAME_URL = "http://mienfield.com/%s_%s";
 
 	/**
-	 * Stores the tile map.
-	 */
-	public static final Map<Short, BufferedImage> TILE_MAP;
-
-	/**
-	 * Stores the current chunk instance.
-	 */
-	private IChunk currentChunk = null;
-
-	/**
-	 * Stores the current chunk X-Coordinate.
-	 */
-	private long currentChunkX = 0;
-
-	/**
-	 * Stores the current chunk Y-Coordinate.
-	 */
-	private long currentChunkY = 0;
-
-	/**
-	 * Stores the current browser image.
+	 * Stores the current chunk.
 	 */
 	@Getter
-	private BufferedImage image;
+	private IChunk chunk = null;
 
 	/**
-	 * Stores the logger instance.
+	 * Stores the current chunk location.
+	 */
+	@Getter
+	private ChunkLocation chunkLocation = null;
+
+	/**
+	 * Stores the parent application instance.
+	 */
+	@Getter
+	@NonNull
+	private final Powersweeper powersweeper;
+
+	/**
+	 * Stores the current screen.
+	 */
+	@Getter
+	private BufferedImage screen = null;
+
+	/**
+	 * Stores the tile parser.
+	 * @todo Move this to core and make it replaceable.
+	 */
+	@Getter
+	private ITileParser tileParser = new ImageTileParser ();
+
+	/**
+	 * Stores the internal logger instance.
 	 */
 	@Getter (AccessLevel.PROTECTED)
 	private static final Logger logger = LogManager.getLogger (ScreenGameInterface.class);
 
 	/**
-	 * Stores the parent application instance.
+	 * Builds a tile related browser action.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @return The action.
 	 */
-	private final Powersweeper parent;
+	public Actions buildTileAction (short x, short y) {
+		// create action
+		Actions action = new Actions (this.powersweeper.getDriverManager ().getDriver ());
 
-	/**
-	 * Static Initialization
-	 */
-	static {
-		// create builder
-		ImmutableMap.Builder<Short, BufferedImage> tileBuilder = new ImmutableMap.Builder<> ();
+		// find HTML element
+		WebElement html = this.powersweeper.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
 
-		// fill with known values
-		for (short i = 1; i <= 8; i++) {
-			try {
-				tileBuilder.put (i, ImageIO.read (ScreenGameInterface.class.getResourceAsStream ("/tile/number-" + i + ".png")));
-			} catch (Exception ex) {
-				getLogger ().warn ("Could not load tile for number " + i + ": " + ex.getMessage (), ex);
-			}
-		}
+		// get real coordinate
+		int realX = this.getRealCoordinate (x);
+		int realY = this.getRealCoordinate (y);
 
-		// load bomb tile
-		BufferedImage bomb = null;
+		realX += (CELL_SIZE / 2);
+		realY += (CELL_SIZE / 2);
 
-		try {
-			bomb = ImageIO.read (ScreenGameInterface.class.getResourceAsStream ("/tile/bomb.png"));
-		} catch (Exception ex) {
-			getLogger ().warn ("Could not load bomb tile: " + ex.getMessage (), ex);
-		}
+		// move cursor
+		action.moveToElement (html, realX, realY);
 
-		// store tile
-		TILE_BOMB = bomb;
-
-		// build map
-		TILE_MAP = tileBuilder.build ();
-	}
-
-	/**
-	 * Constructs a new CanvasGameInterface instance.
-	 * @param parent The parent application.
-	 */
-	public ScreenGameInterface (@NonNull Powersweeper parent) {
-		getLogger ().entry ();
-
-		// store arguments
-		this.parent = parent;
-
-		// trace
-		getLogger ().exit ();
+		// return action
+		return action;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean flagField (short x, short y) {
-		getLogger ().entry ();
+	public void flagTile (TileLocation location) {
+		// check chunk location
+		if (this.chunkLocation == null || !this.chunkLocation.equals (location.getChunk ().getLocation ())) this.moveToChunk (location.getChunk ().getLocation ());
 
-		// validate
-		if (this.currentChunk == null) return getLogger ().exit (false);
-		if (this.currentChunk.getField (x, y) != FieldState.UNTOUCHED) return getLogger ().exit (false);
+		// prepare action
+		Actions actions = this.buildTileAction (location.getX (), location.getY ());
 
-		// find HTML coordinate
-		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
-
-		// build action
-		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
-		action.moveToElement (html, this.getRealCoordinate (x), this.getRealCoordinate (y));
-		action.contextClick ();
+		// click
+		actions.contextClick ();
 
 		// perform
-		action.build ().perform ();
-
-		// update cache
-		this.currentChunk.setField (x, y, FieldState.FLAGGED);
-
-		return getLogger ().exit (true);
+		actions.build ().perform ();
 	}
 
 	/**
-	 * Returns a pixel value.
+	 * Returns a real screen coordinate based on the cell location.
+	 * @param coordinate The coordinate.
+	 * @return The absolute coordinate.
+	 */
+	protected int getRealCoordinate (short coordinate) {
+		return (coordinate * CELL_SIZE);
+	}
+
+	/**
+	 * Guesses a single tile.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
-	 * @return The pixel color.
 	 */
-	public Color getPixel (int x, int y) {
-		getLogger ().entry ();
-
-		// decode color
-		return getLogger ().exit (new Color (this.getRawPixel (x, y)));
-	}
-
-	/**
-	 * Returns the raw pixel value.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return The color value.
-	 */
-	public int getRawPixel (int x, int y) {
-		getLogger ().entry ();
-
-		// get value
-		return getLogger ().exit ((this.image.getRGB (x, y) & 0x00FFFFFF)); // drop alpha bit
-	}
-
-	/**
-	 * Calculates the absolute coordinate.
-	 * @param in The input value.
-	 * @return The real coordinate.
-	 */
-	public short getRealCoordinate (short in) {
-		getLogger ().entry ();
-
-		// calculate
-		return getLogger ().exit (((short) ((in * CELL_SIZE) + Math.floor ((CELL_SIZE / 2)))));
-	}
-
-	/**
-	 * Guesses a field state.
-	 * @param fieldX The X-Coordinate.
-	 * @param fieldY The Y-Coordinate.
-	 */
-	public void guessFieldState (short fieldX, short fieldY) {
-		getLogger ().entry ();
-
-		// calculate absolute position
-		int x = (fieldX * 32);
-		int y = (fieldY * 32);
+	protected void guessTile (short x, short y) {
+		// get real coordinates
+		int realX = this.getRealCoordinate (x);
+		int realY = this.getRealCoordinate (y);
 
 		// extract tile
-		BufferedImage tile = this.image.getSubimage (x, y, 30, 30);
+		BufferedImage tile = this.getScreen ().getSubimage (realX, realY, (CELL_SIZE - BORDER_WIDTH), (CELL_SIZE - BORDER_WIDTH));
 
 		// calculate average color
-		int averageR = 0;
+		// TODO: Re-Add averages to simplify the process
+		/* int averageR = 0;
 		int averageG = 0;
 		int averageB = 0;
 
-		for (int currentX = 0; currentX < tile.getWidth (); currentX++) {
-			for (int currentY = 0; currentY < tile.getHeight (); currentY++) {
+		for (int pixelX = 0; pixelX < tile.getWidth (); pixelX++) {
+			for (int pixelY = 0; pixelY < tile.getHeight (); pixelY++) {
 				// parse color
-				Color color = new Color ((tile.getRGB (currentX, currentY) & 0x00FFFFFF));
+				Color color = new Color (tile.getRGB (pixelX, pixelY));
 
-				// add to average
+				// append
 				averageR += color.getR ();
 				averageG += color.getG ();
 				averageB += color.getB ();
 			}
 		}
 
-		averageR /= 900;
-		averageG /= 900;
-		averageB /= 900;
+		int size = (tile.getWidth () * tile.getHeight ());
+		Color average = new Color (averageR, averageG, averageB); */
 
-		// re-create color
-		Color average = new Color (averageR, averageG, averageB);
-
-		// check for obvious values
-		// waiting
-		if ((tile.getRGB (0, 0) & 0x00FFFFFF) == 0x005493) {
-			// update cache
-			this.currentChunk.setField (fieldX, fieldY, FieldState.WAITING);
-			this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
-
-			// trace
-			getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to WAITING:-1.");
-
-			// skip further execution
-			return;
-		}
-
-		// Untouched field
-		if (average.getValue () == 0xDBDBDB) {
-			// update cache
-			this.currentChunk.setField (fieldX, fieldY, FieldState.UNTOUCHED);
-			this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
-
-			// trace
-			getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to UNTOUCHED:-1.");
-
-			// skip further execution
-			return;
-		}
-
-		// Flag
-		if (average.getValue () == 0xC6B7B5) {
-			// update cache
-			this.currentChunk.setField (fieldX, fieldY, FieldState.FLAGGED);
-			this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
-
-			// trace
-			getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to FLAGGED:-1.");
-
-			// skip further execution
-			return;
-		}
-
-		// check whether color average is within known bounds
-		if (average.isGray ()) {
-			// log
-			getLogger ().trace ("Detected a perfect gray value. Checking for number tiles.");
-
-			// guess number
-			short number = this.guessNumber (tile, average);
-
-			// store data
-			if (number >= 0) {
-				// update cache
-				this.currentChunk.setField (fieldX, fieldY, FieldState.NUMBER);
-				this.currentChunk.setValue (fieldX, fieldY, number);
-
-				// trace
-				getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to NUMBER:" + number + ".");
-
-				// skip further execution
-				return;
-			}
-
-			// check for bombs
-			if (this.tileMatches (tile, TILE_BOMB)) {
-				// update cache
-				this.currentChunk.setField (fieldX, fieldY, FieldState.BOMB);
-				this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
-
-				// trace
-				getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to BOMB:-1.");
-
-				// skip further execution
-				return;
-			}
-		}
-
-		// warn
-		getLogger ().debug ("Could not guess value for field " + fieldX + "," + fieldY + ". Assuming flagged.");
-
-		// dump
-		if (this.parent.getConfiguration ().isDumpingEnabled ()) {
-			// log
-			getLogger ().info ("Dumping unknown tile to dump-" + this.currentChunkX + "_" + this.currentChunkY + "-" + fieldX + "_" + fieldY + ".png ...");
-
-			// write to file
-			try {
-				ImageIO.write (tile, "png", new File ("dump-" + this.currentChunkX + "_" + this.currentChunkY + "-" + fieldX + "_" + fieldY + ".png"));
-			} catch (IOException ex) {
-				getLogger ().warn ("Could not dump tile.");
-			}
-		}
-
-		// set value to flagged
-		this.currentChunk.setField (fieldX, fieldY, FieldState.FLAGGED);
-		this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
-
-		// trace
-		getLogger ().exit ();
-	}
-
-	/**
-	 * Guesses a tile number.
-	 * @param tile The tile.
-	 * @param average The average color.
-	 * @return The tile number (-1 if unknown).
-	 */
-	public short guessNumber (@NonNull BufferedImage tile, @NonNull Color average) {
-		getLogger ().entry ();
-
-		// check for empty field
-		if (average.getValue () == 0xFFFFFF) return 0;
-
-		// check numbers
-		for (Map.Entry<Short, BufferedImage> preset : TILE_MAP.entrySet ()) {
-			if (this.tileMatches (tile, preset.getValue ())) return preset.getKey ();
-		}
-
-		// return unknown value
-		return getLogger ().exit (((short) -1));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void move (long x, long y) {
-		getLogger ().entry ();
-
-		// reset chunk
-		this.currentChunk = null;
-
-		// request new URL
-		this.parent.movePosition (x, y);
-
-		// update position
-		this.currentChunkX = x;
-		this.currentChunkY = y;
-
-		// trace
-		getLogger ().exit ();
-	}
-
-	/**
-	 * Checks whether two tiles match exactly.
-	 * @param i1 Tile 1.
-	 * @param i2 Tile 2.
-	 * @return True if both tiles are exactly the same.
-	 */
-	public boolean tileMatches (@NonNull BufferedImage i1, @NonNull BufferedImage i2) {
-		// check size
-		if (i1.getWidth () != i2.getWidth ()) return false;
-		if (i1.getHeight () != i2.getHeight ()) return false;
-
-		// check pixels
-		for (int x = 0; x < i1.getWidth (); x++) {
-			for (int y = 0; y < i1.getHeight (); y++) {
-				// check pixel
-				if (i1.getRGB (x, y) != i2.getRGB (x, y)) return false;
-			}
-		}
-
-		// everything matches
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public IChunk update () {
-		getLogger ().entry ();
-
-		// create matrix
-		if (this.currentChunk == null) this.currentChunk = new MatrixChunk (this.currentChunkX, this.currentChunkY, ((short) 20), ((short) 20));
-
-		// focefully close all popups
-		this.parent.getDriverManager ().getExecutor ().executeScript ("$('.popup').hide ();");
-
-		// find HTML coordinate
-		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
-
-		// move cursor out of chunk
-		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
-		action.moveToElement (html, 800, 800);
-		action.build ().perform ();
-
-		// parse
+		// guess tile
 		try {
-			// get current display
-			this.image = ImageIO.read (new ByteArrayInputStream (((TakesScreenshot) this.parent.getDriverManager ().getDriver ()).getScreenshotAs (OutputType.BYTES)));
+			ITile parsedTile = this.getTileParser ().parse (new ImageTileTemplate (tile, null), new TileLocation (x, y, this.chunk));
 
-			// parse screen
-			for (short x = 0; x < 20; x++) {
-				for (short y = 0; y < 20; y++) {
-					this.guessFieldState (x, y);
+			// store
+			((MatrixChunk) this.getChunk ()).setTile (x, y, parsedTile);
+		} catch (TileException ex) {
+			getLogger ().warn ("Could not parse tile " + x + "," + y + ": " + ex.getMessage (), ex);
+			return;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void moveToChunk (ChunkLocation location) {
+		getLogger ().entry ();
+
+		// TODO: Do some sane movement
+
+		// open new URL
+		this.getPowersweeper ().getDriverManager ().getDriver ().get (String.format (GAME_URL, location.getX (), location.getY ()));
+
+		// wait for a few seconds
+		try {
+			Thread.sleep (5000);
+		} catch (Exception ex) {
+			getLogger ().warn ("Aliens wake us up to early.");
+		}
+
+		// update location
+		this.chunkLocation = location;
+
+		// force update
+		this.update ();
+
+		// trace
+		getLogger ().exit ();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void touchTile (TileLocation location) {
+		// check chunk location
+		if (this.chunkLocation == null || !this.chunkLocation.equals (location.getChunk ().getLocation ())) this.moveToChunk (location.getChunk ().getLocation ());
+
+		// prepare action
+		Actions actions = this.buildTileAction (location.getX (), location.getY ());
+
+		// click
+		actions.click ();
+
+		// perform
+		actions.build ().perform ();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void update () {
+		getLogger ().entry ();
+
+		// re-create chunk
+		this.chunk = new MatrixChunk (((short) 20), ((short) 20), this.chunkLocation);
+
+		// update
+		try {
+			// move the curser out of the way
+			this.buildTileAction (((short) 30), ((short) 30)).build ().perform ();
+
+			// clear popups
+			this.getPowersweeper ().getDriverManager ().getExecutor ().executeScript ("$('.popup').hide ();");
+
+			// pull screen
+			this.screen = ImageIO.read (new ByteArrayInputStream (((TakesScreenshot) this.getPowersweeper ().getDriverManager ().getDriver ()).getScreenshotAs (OutputType.BYTES)));
+
+			// iterate over all fields
+			for (short x = 0; x < this.chunk.getWidth (); x++) {
+				for (short y = 0; y < this.chunk.getHeight (); y++) {
+					this.guessTile (x, y);
 				}
 			}
 		} catch (IOException ex) {
-			// warn user as we're not updating our data this turn
-			// this will cause unexpected behaviour
-			getLogger ().warn ("Could process current browser screen: " + ex.getMessage ());
+			getLogger ().error ("Could not pull a new version of the current screen: " + ex.getMessage (), ex);
 		}
-
-		// return parsed chunk
-		return getLogger ().exit (this.currentChunk);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean uncoverField (short x, short y) {
-		getLogger ().entry ();
-
-		// verify
-		if (this.currentChunk == null) getLogger ().exit (false);
-		if (this.currentChunk.getField (x, y) != FieldState.UNTOUCHED) return getLogger ().exit (false);
-
-		// find HTML coordinate
-		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
-
-		// build action
-		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
-		action.moveToElement (html, this.getRealCoordinate (x), this.getRealCoordinate (y));
-		action.click ();
-
-		// perform
-		action.build ().perform ();
-
-		// update cache
-		this.currentChunk.setField (x, y, FieldState.UNCOVERED);
-
-		// sleep for a few seconds
-		// this ensures that no invalid data is received from mine animations
-		try {
-			Thread.sleep (2000);
-		} catch (Exception ex) { }
-
-		return getLogger ().exit (true);
 	}
 }
