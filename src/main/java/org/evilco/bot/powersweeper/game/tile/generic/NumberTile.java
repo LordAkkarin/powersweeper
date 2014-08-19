@@ -66,5 +66,8 @@ public class NumberTile extends AbstractTile {
 		}
 
 		this.value = value;
+
+		// log
+		getLogger ().trace ("Set value to " + this.value + ".");
 	}
 }
