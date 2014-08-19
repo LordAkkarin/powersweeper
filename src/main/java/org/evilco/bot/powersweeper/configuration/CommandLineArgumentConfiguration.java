@@ -54,7 +54,9 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
 							.addOption (OptionBuilder.withLongOpt ("debug").create ())
 							.addOption (OptionBuilder.withLongOpt ("dumpunknowntiles").create ())
-							.addOption (OptionBuilder.withLongOpt ("driver").hasArg ().create ());
+							.addOption (OptionBuilder.withLongOpt ("driver").hasArg ().create ())
+							.addOption (OptionBuilder.hasArg ().create ("x"))
+							.addOption (OptionBuilder.hasArg ().create ("y"));
 
 	/**
 	 * Stores the parsed command line.
@@ -93,6 +95,22 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	@Override
 	public File getNativeLibraryDirectory () {
 		return (new File ((this.commandLine.hasOption ("natives") ? this.commandLine.getOptionValue ("natives") : DEFAULT_NATIVE_DIRECTORY)));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Long getStartX () {
+		return (this.commandLine.hasOption ("x") ? Long.parseLong (this.commandLine.getOptionValue ("x")) : null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Long getStartY () {
+		return (this.commandLine.hasOption ("y") ? Long.parseLong (this.commandLine.getOptionValue ("y")) : null);
 	}
 
 	/**

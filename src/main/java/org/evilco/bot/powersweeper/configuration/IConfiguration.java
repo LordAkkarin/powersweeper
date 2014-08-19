@@ -46,6 +46,18 @@ public interface IConfiguration {
 	public File getNativeLibraryDirectory ();
 
 	/**
+	 * Returns the start X-Coordinate.
+	 * @return The X-Coordinate.
+	 */
+	public Long getStartX ();
+
+	/**
+	 * Returns the start Y-Coordinate.
+	 * @return The Y-Coordinate.
+	 */
+	public Long getStartY ();
+
+	/**
 	 * Checks whether debugging is enabled.
 	 * @return True if debugging is enabled.
 	 */

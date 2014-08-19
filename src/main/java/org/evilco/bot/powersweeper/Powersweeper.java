@@ -232,10 +232,15 @@ public class Powersweeper {
 			System.exit (-10);
 		}
 
+		// get start coordinates
+		Long x = this.configuration.getStartX ();
+		Long y = this.configuration.getStartY ();
+
 		// generate initial coordinates
 		Random random = new SecureRandom ();
-		int x = (1337 + random.nextInt (3000));
-		int y = (1337 + random.nextInt (3000));
+
+		if (x == null) x = ((long) (1337 + random.nextInt (3000)));
+		if (y == null) y = ((long) (1337 + random.nextInt (3000)));
 
 		// move
 		this.gameInterface.move (x, y);
