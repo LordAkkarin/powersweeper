@@ -222,7 +222,7 @@ public class ScreenGameInterface implements IGameInterface {
 		for (int currentX = 0; currentX < tile.getWidth (); currentX++) {
 			for (int currentY = 0; currentY < tile.getHeight (); currentY++) {
 				// parse color
-				Color color = new Color (tile.getRGB (currentX, currentY));
+				Color color = new Color ((tile.getRGB (currentX, currentY) & 0x00FFFFFF));
 
 				// add to average
 				averageR += color.getR ();
@@ -240,7 +240,7 @@ public class ScreenGameInterface implements IGameInterface {
 
 		// check for obvious values
 		// waiting
-		if (tile.getRGB (0, 0) == 0x005493) {
+		if ((tile.getRGB (0, 0) & 0x00FFFFFF) == 0x005493) {
 			// update cache
 			this.currentChunk.setField (fieldX, fieldY, FieldState.WAITING);
 			this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
