@@ -469,6 +469,13 @@ public class ScreenGameInterface implements IGameInterface {
 
 		// update cache
 		this.currentChunk.setField (x, y, FieldState.UNCOVERED);
+
+		// sleep for a few seconds
+		// this ensures that no invalid data is received from mine animations
+		try {
+			Thread.sleep (2000);
+		} catch (Exception ex) { }
+
 		return getLogger ().exit (true);
 	}
 }
