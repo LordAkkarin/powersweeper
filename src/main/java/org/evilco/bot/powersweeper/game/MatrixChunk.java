@@ -79,7 +79,7 @@ public class MatrixChunk implements IChunk {
 	 */
 	@Override
 	public FieldState getField (short x, short y) {
-		return this.type[x][y];
+		return this.type[y][x];
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class MatrixChunk implements IChunk {
 	 */
 	@Override
 	public short getUncoveredValue (short x, short y) {
-		return this.value[x][y];
+		return this.value[y][x];
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class MatrixChunk implements IChunk {
 	 */
 	@Override
 	public void setField (short x, short y, @NonNull FieldState fieldState) {
-		this.type[x][y] = fieldState;
+		this.type[y][x] = fieldState;
 	}
 
 	/**
@@ -124,6 +124,6 @@ public class MatrixChunk implements IChunk {
 	 */
 	@Override
 	public void setValue (short x, short y, short value) {
-		this.value[x][y] = value;
+		this.value[y][x] = value;
 	}
 }
