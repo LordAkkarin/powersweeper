@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
+import org.evilco.bot.powersweeper.game.IChunk;
 import org.evilco.bot.powersweeper.game.ScreenGameInterface;
 import org.evilco.bot.powersweeper.game.IGameInterface;
 import org.evilco.bot.powersweeper.platform.DriverManager;
@@ -245,10 +246,10 @@ public class Powersweeper {
 			getLogger ().trace ("Entering processing loop.");
 
 			// process screen
-			this.gameInterface.update ();
+			IChunk currentChunk = this.gameInterface.update ();
 
 			// call AI
-			// TODO
+			this.brain.think (currentChunk, this.gameInterface);
 
 			// wait for some time
 			try {
