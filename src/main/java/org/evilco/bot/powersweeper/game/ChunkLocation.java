@@ -48,10 +48,6 @@ public class ChunkLocation {
 		long x = (this.getX () - location.getX ());
 		long y = (this.getY () - location.getY ());
 
-		// sanitize
-		if (x < 0) x *= -1;
-		if (y < 0) y *= -1;
-
 		return (new ChunkLocation (x, y));
 	}
 
@@ -63,5 +59,13 @@ public class ChunkLocation {
 	 */
 	public ChunkLocation getRelative (long x, long y) {
 		return (new ChunkLocation ((this.getX () + x), (this.getY () + y)));
+	}
+
+	/**
+	 * Sanitizes all coordinates.
+	 */
+	public void sanitize () {
+		if (this.x < 0) this.x *= -1;
+		if (this.y < 0) this.y *= -1;
 	}
 }
