@@ -49,6 +49,16 @@ public class TileLocation {
 	private IChunk chunk;
 
 	/**
+	 * Returns a relative location.
+	 * @param x The X-Offset.
+	 * @param y The Y-Offset.
+	 * @return
+	 */
+	public TileLocation getRelative (short x, short y) {
+		return (new TileLocation (((short) (this.getX () + x)), ((short) (this.getY () + y)), this.getChunk ()));
+	}
+
+	/**
 	 * Returns the tile.
 	 * @return The tile.
 	 */
