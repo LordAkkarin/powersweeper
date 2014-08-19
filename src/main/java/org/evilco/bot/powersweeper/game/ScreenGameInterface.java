@@ -203,7 +203,7 @@ public class ScreenGameInterface implements IGameInterface {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void moveToChunk (ChunkLocation location) {
+	public void moveToChunk (@NonNull ChunkLocation location) {
 		getLogger ().entry ();
 
 		// TODO: Do some sane movement
