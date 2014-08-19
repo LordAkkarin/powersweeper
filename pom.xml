@@ -143,6 +143,17 @@
 					<include>log4j2.xml</include>
 				</includes>
 			</resource>
+
+			<!-- Tiles -->
+			<resource>
+				<directory>${project.basedir}/src/main/resources/tile</directory>
+				<targetPath>tile/</targetPath>
+				<filtering>false</filtering>
+
+				<includes>
+					<include>*.png</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
