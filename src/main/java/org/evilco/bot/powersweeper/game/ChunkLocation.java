@@ -15,10 +15,7 @@
 
 package org.evilco.bot.powersweeper.game;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -41,6 +38,22 @@ public class ChunkLocation {
 	@Getter
 	@Setter
 	private long y;
+
+	/**
+	 * Calculates the distance between two locations.
+	 * @param location The location.
+	 * @return The distance.
+	 */
+	public ChunkLocation getDistance (@NonNull ChunkLocation location) {
+		long x = (this.getX () - location.getX ());
+		long y = (this.getY () - location.getY ());
+
+		// sanitize
+		if (x < 0) x *= -1;
+		if (y < 0) y *= -1;
+
+		return (new ChunkLocation (x, y));
+	}
 
 	/**
 	 * Gets a relative chunk location.
