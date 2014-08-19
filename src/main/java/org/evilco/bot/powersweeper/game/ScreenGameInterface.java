@@ -62,6 +62,11 @@ public class ScreenGameInterface implements IGameInterface {
 	public static final String GAME_URL = "http://mienfield.com/%s_%s";
 
 	/**
+	 * Defines the maximum amount of chunks to move when doing sane movements.
+	 */
+	public static final int SANE_MOVEMENT_THRESHOLD = 5;
+
+	/**
 	 * Stores the current chunk.
 	 */
 	@Getter
@@ -206,7 +211,56 @@ public class ScreenGameInterface implements IGameInterface {
 	public void moveToChunk (@NonNull ChunkLocation location) {
 		getLogger ().entry ();
 
-		// TODO: Do some sane movement
+		// check whether sane movement is possible
+		if (this.chunkLocation != null) {
+			// calculate distance
+			ChunkLocation distance = this.chunkLocation.getDistance (location);
+			ChunkLocation distanceSanitized = new ChunkLocation (distance);
+			distanceSanitized.sanitize ();
+
+			// verify whether sane movement is possible
+			if (distanceSanitized.getX () <= SANE_MOVEMENT_THRESHOLD && distanceSanitized.getY () <= SANE_MOVEMENT_THRESHOLD) {
+				// calculate distance
+				long x = ((this.chunk.getWidth () * CELL_SIZE) * distance.getX ());
+				long y = ((this.chunk.getHeight () * CELL_SIZE) * distance.getY ());
+
+				// verify
+				if (x > Integer.MAX_VALUE || y > Integer.MAX_VALUE) getLogger ().warn ("Sane movement threshold of " + SANE_MOVEMENT_THRESHOLD + " seems to be too big. Aborting.");
+				else {
+					// find HTML
+					WebElement html = this.getPowersweeper ().getDriverManager ().getDriver ().findElement (By.tagName ("html"));
+
+					// build action
+					Actions action = new Actions (this.getPowersweeper ().getDriverManager ().getDriver ());
+					action.moveToElement (html, (CELL_SIZE / 2), (CELL_SIZE / 2));
+					action.clickAndHold ();
+					action.moveByOffset (((int) x), ((int) y));
+					action.release ();
+
+					// execute
+					action.build ().perform ();
+
+					// wait for a few seconds
+					try {
+						Thread.sleep (2000);
+					} catch (Exception ex) {
+						getLogger ().warn ("Aliens wake us up to early.");
+					}
+
+					// update location
+					this.chunkLocation = location;
+
+					// force update
+					this.update ();
+
+					// trace
+					getLogger ().exit ();
+
+					// skip
+					return;
+				}
+			}
+		}
 
 		// open new URL
 		this.getPowersweeper ().getDriverManager ().getDriver ().get (String.format (GAME_URL, location.getX (), location.getY ()));
