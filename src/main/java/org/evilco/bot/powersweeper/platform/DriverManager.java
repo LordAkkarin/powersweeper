@@ -53,7 +53,7 @@ public class DriverManager {
 	/**
 	 * Defines the default window dimensions.
 	 */
-	public static final Dimension WINDOW_DIMENSIONS = new Dimension (800, 800);
+	public static final Dimension WINDOW_DIMENSIONS = new Dimension (1000, 1000);
 
 	/**
 	 * Stores the application configuration.
