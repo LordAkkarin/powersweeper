@@ -157,6 +157,7 @@ public class ScreenGameInterface implements IGameInterface {
 
 		// update cache
 		this.currentChunk.setField (x, y, FieldState.FLAGGED);
+
 		return getLogger ().exit (true);
 	}
 
@@ -387,6 +388,14 @@ public class ScreenGameInterface implements IGameInterface {
 
 		// focefully close all popups
 		this.parent.getDriverManager ().getExecutor ().executeScript ("$('.popup').hide ();");
+
+		// find HTML coordinate
+		WebElement html = this.parent.getDriverManager ().getDriver ().findElement (By.tagName ("html"));
+
+		// move cursor out of chunk
+		Actions action = new Actions (this.parent.getDriverManager ().getDriver ());
+		action.moveToElement (html, 800, 800);
+		action.build ().perform ();
 
 		// parse
 		try {
