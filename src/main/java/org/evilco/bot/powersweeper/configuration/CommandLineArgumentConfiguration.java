@@ -48,7 +48,7 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	 * Defines valid command line options.
 	 */
 	public static final Options OPTIONS = (new Options ())
-							.addOption (OptionBuilder.withLongOpt ("brain").create ("b"))
+							.addOption (OptionBuilder.withLongOpt ("brain").hasArg ().create ("b"))
 							.addOption (OptionBuilder.withLongOpt ("help").create ("h"))
 							.addOption (OptionBuilder.withLongOpt ("natives").hasArg ().create ())
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
