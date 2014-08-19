@@ -31,11 +31,8 @@ import org.openqa.selenium.interactions.Actions;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
