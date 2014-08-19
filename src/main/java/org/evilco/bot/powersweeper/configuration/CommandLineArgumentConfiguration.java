@@ -53,6 +53,7 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 							.addOption (OptionBuilder.withLongOpt ("natives").hasArg ().create ())
 							.addOption (OptionBuilder.withLongOpt ("nonativedownload").create ())
 							.addOption (OptionBuilder.withLongOpt ("debug").create ())
+							.addOption (OptionBuilder.withLongOpt ("dumpunknowntiles").create ())
 							.addOption (OptionBuilder.withLongOpt ("driver").hasArg ().create ());
 
 	/**
@@ -100,6 +101,14 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	@Override
 	public boolean isDebugEnabled () {
 		return this.commandLine.hasOption ("debug");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDumpingEnabled () {
+		return this.commandLine.hasOption ("dumpunknowntiles");
 	}
 
 	/**

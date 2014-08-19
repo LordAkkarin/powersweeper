@@ -52,6 +52,12 @@ public interface IConfiguration {
 	public boolean isDebugEnabled ();
 
 	/**
+	 * Checks whether tile dumping is enabled.
+	 * @return True if dumping is enabled.
+	 */
+	public boolean isDumpingEnabled ();
+
+	/**
 	 * Checks whether native automatic download of native libraries is enabled.
 	 * @return True if download is enabled.
 	 */

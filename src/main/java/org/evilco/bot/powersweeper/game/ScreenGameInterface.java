@@ -31,6 +31,7 @@ import org.openqa.selenium.interactions.Actions;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -315,6 +316,19 @@ public class ScreenGameInterface implements IGameInterface {
 
 		// warn
 		getLogger ().debug ("Could not guess value for field " + fieldX + "," + fieldY + ". Assuming flagged.");
+
+		// dump
+		if (this.parent.getConfiguration ().isDumpingEnabled ()) {
+			// log
+			getLogger ().info ("Dumping unknown tile to dump-" + this.currentChunkX + "_" + this.currentChunkY + "-" + fieldX + "_" + fieldY + ".png ...");
+
+			// write to file
+			try {
+				ImageIO.write (tile, "png", new File ("dump-" + this.currentChunkX + "_" + this.currentChunkY + "-" + fieldX + "_" + fieldY + ".png"));
+			} catch (IOException ex) {
+				getLogger ().warn ("Could not dump tile.");
+			}
+		}
 
 		// set value to flagged
 		this.currentChunk.setField (fieldX, fieldY, FieldState.FLAGGED);
