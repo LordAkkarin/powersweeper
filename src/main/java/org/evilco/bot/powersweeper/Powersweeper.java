@@ -101,13 +101,13 @@ public class Powersweeper {
 		getLogger ().info ("---------------------------------------------------");
 
 		// enable debug logging
-		if (configuration.isDebugEnabled ()) {
+		if (configuration.isDebugEnabled () || configuration.isTracingEnabled ()) {
 			// get context & configuration
 			LoggerContext context = ((LoggerContext) LogManager.getContext (false));
 			Configuration config = context.getConfiguration ();
 
 			// set new level
-			config.getLoggerConfig (LogManager.ROOT_LOGGER_NAME).setLevel (Level.ALL);
+			config.getLoggerConfig (LogManager.ROOT_LOGGER_NAME).setLevel ((configuration.isTracingEnabled () ? Level.ALL : Level.DEBUG));
 
 			// update context
 			context.updateLoggers (config);
