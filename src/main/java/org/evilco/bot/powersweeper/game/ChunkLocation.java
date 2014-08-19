@@ -40,6 +40,14 @@ public class ChunkLocation {
 	private long y;
 
 	/**
+	 * Copies ChunkLocation instance.
+	 * @param location The location.
+	 */
+	public ChunkLocation (@NonNull ChunkLocation location) {
+		this (location.getX (), location.getY ());
+	}
+
+	/**
 	 * Calculates the distance between two locations.
 	 * @param location The location.
 	 * @return The distance.
