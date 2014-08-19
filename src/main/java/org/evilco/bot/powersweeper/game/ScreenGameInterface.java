@@ -15,17 +15,28 @@
 
 package org.evilco.bot.powersweeper.game;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.evilco.bot.powersweeper.Powersweeper;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public class CanvasGameInterface implements IGameInterface {
+public class ScreenGameInterface implements IGameInterface {
 
 	/**
 	 * Defines the cell size.
@@ -48,6 +59,18 @@ public class CanvasGameInterface implements IGameInterface {
 	private long currentChunkY = 0;
 
 	/**
+	 * Stores the current browser image.
+	 */
+	@Getter
+	private BufferedImage image;
+
+	/**
+	 * Stores the logger instance.
+	 */
+	@Getter (AccessLevel.PROTECTED)
+	private static final Logger logger = LogManager.getLogger (ScreenGameInterface.class);
+
+	/**
 	 * Stores the parent application instance.
 	 */
 	private final Powersweeper parent;
@@ -56,7 +79,7 @@ public class CanvasGameInterface implements IGameInterface {
 	 * Constructs a new CanvasGameInterface instance.
 	 * @param parent The parent application.
 	 */
-	public CanvasGameInterface (@NonNull Powersweeper parent) {
+	public ScreenGameInterface (@NonNull Powersweeper parent) {
 		this.parent = parent;
 	}
 
@@ -117,7 +140,17 @@ public class CanvasGameInterface implements IGameInterface {
 		// create matrix
 		if (this.currentChunk == null) new MatrixChunk (this.currentChunkX, this.currentChunkY, ((short) 20), ((short) 20));
 
-		// TODO: Parse
+		// parse
+		try {
+			// get current display
+			this.image = ImageIO.read (new ByteArrayInputStream (((TakesScreenshot) this.parent.getDriverManager ().getDriver ()).getScreenshotAs (OutputType.BYTES)));
+
+			// TODO: Parse screen
+		} catch (IOException ex) {
+			// warn user as we're not updating our data this turn
+			// this will cause unexpected behaviour
+			getLogger ().warn ("Could process current browser screen: " + ex.getMessage ());
+		}
 
 		// return parsed chunk
 		return this.currentChunk;
