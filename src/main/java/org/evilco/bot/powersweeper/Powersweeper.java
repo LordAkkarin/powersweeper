@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.evilco.bot.powersweeper.brain.IBrain;
 import org.evilco.bot.powersweeper.configuration.CommandLineArgumentConfiguration;
 import org.evilco.bot.powersweeper.configuration.IConfiguration;
+import org.evilco.bot.powersweeper.game.ScreenGameInterface;
+import org.evilco.bot.powersweeper.game.IGameInterface;
 import org.evilco.bot.powersweeper.platform.DriverManager;
 
 import java.security.SecureRandom;
@@ -72,6 +74,12 @@ public class Powersweeper {
 	private DriverManager driverManager = null;
 
 	/**
+	 * Stores the active game interface.
+	 */
+	@Getter
+	private IGameInterface gameInterface = null;
+
+	/**
 	 * Stores the main logger instance.
 	 */
 	@Getter (AccessLevel.PROTECTED)
@@ -115,6 +123,9 @@ public class Powersweeper {
 
 		// download natives
 		this.driverManager.downloadNatives ();
+
+		// initialize gamer interface
+		this.gameInterface = new ScreenGameInterface (this);
 
 		// trace
 		getLogger ().exit ();
@@ -226,7 +237,7 @@ public class Powersweeper {
 		int y = (1337 + random.nextInt (3000));
 
 		// move
-		this.movePosition (x, y);
+		this.gameInterface.move (x, y);
 
 		// enter main loop
 		while (this.alive) {
@@ -234,7 +245,7 @@ public class Powersweeper {
 			getLogger ().trace ("Entering processing loop.");
 
 			// process screen
-			// TODO
+			this.gameInterface.update ();
 
 			// call AI
 			// TODO
