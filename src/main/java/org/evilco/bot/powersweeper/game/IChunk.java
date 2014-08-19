@@ -42,12 +42,24 @@ public interface IChunk {
 	public FieldState getField (short x, short y);
 
 	/**
+	 * Returns the height.
+	 * @return The height.
+	 */
+	public short getHeight ();
+
+	/**
 	 * Returns the uncovered value (the numeric value) of a field.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.
 	 * @return The uncovered value.
 	 */
 	public short getUncoveredValue (short x, short y);
+
+	/**
+	 * Returns the chunk width.
+	 * @return The width.
+	 */
+	public short getWidth ();
 
 	/**
 	 * Resets the chunk information.
