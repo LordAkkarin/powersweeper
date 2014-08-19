@@ -239,6 +239,19 @@ public class ScreenGameInterface implements IGameInterface {
 		Color average = new Color (averageR, averageG, averageB);
 
 		// check for obvious values
+		// waiting
+		if (tile.getRGB (0, 0) == 0x005493) {
+			// update cache
+			this.currentChunk.setField (fieldX, fieldY, FieldState.WAITING);
+			this.currentChunk.setValue (fieldX, fieldY, ((short) -1));
+
+			// trace
+			getLogger ().trace ("Set value for field " + fieldX + "," + fieldY + " to WAITING:-1.");
+
+			// skip further execution
+			return;
+		}
+
 		// Untouched field
 		if (average.getValue () == 0xDBDBDB) {
 			// update cache

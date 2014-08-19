@@ -24,5 +24,6 @@ public enum FieldState {
 	FLAGGED,
 	UNCOVERED,
 	NUMBER,
-	BOMB
+	BOMB,
+	WAITING
 }
