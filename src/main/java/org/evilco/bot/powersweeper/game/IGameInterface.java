@@ -30,6 +30,12 @@ public interface IGameInterface {
 	public boolean flagField (short x, short y);
 
 	/**
+	 * Returns the current chunk.
+	 * @return The chunk.
+	 */
+	public IChunk getCurrentChunk ();
+
+	/**
 	 * Moves the screen towards a new chunk.
 	 * @param x The X-Coordinate.
 	 * @param y The Y-Coordinate.

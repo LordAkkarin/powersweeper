@@ -59,6 +59,7 @@ public class ScreenGameInterface implements IGameInterface {
 	/**
 	 * Stores the current chunk instance.
 	 */
+	@Getter
 	private IChunk currentChunk = null;
 
 	/**
