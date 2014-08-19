@@ -13,19 +13,42 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
+package org.evilco.bot.powersweeper.game;
 
-import org.evilco.bot.powersweeper.game.IGameInterface;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+@AllArgsConstructor
+@EqualsAndHashCode
+public class ChunkLocation {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Stores the X-Coordinate.
 	 */
-	public void think (IGameInterface gameInterface);
+	@Getter
+	@Setter
+	private long x;
+
+	/**
+	 * Stores the Y-Coordinate.
+	 */
+	@Getter
+	@Setter
+	private long y;
+
+	/**
+	 * Gets a relative chunk location.
+	 * @param x The X-Offset.
+	 * @param y The Y-Offset.
+	 * @return The relative location.
+	 */
+	public ChunkLocation getRelative (long x, long y) {
+		return (new ChunkLocation ((this.getX () + x), (this.getY () + y)));
+	}
 }

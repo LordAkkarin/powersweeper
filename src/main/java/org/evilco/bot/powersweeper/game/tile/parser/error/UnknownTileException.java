@@ -13,39 +13,43 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.game;
-
-import org.evilco.bot.powersweeper.game.tile.ITile;
+package org.evilco.bot.powersweeper.game.tile.parser.error;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IChunk {
+public class UnknownTileException extends TileParserException {
 
 	/**
-	 * Returns the chunk height.
-	 * @return The height.
+	 * Constructs a new UnknownTileException instance.
 	 */
-	public short getHeight ();
+	public UnknownTileException () {
+		super ();
+	}
 
 	/**
-	 * Returns the chunk location.
-	 * @return The location.
+	 * Constructs a new UnknownTileException instance.
+	 * @param message The error message.
 	 */
-	public ChunkLocation getLocation ();
+	public UnknownTileException (String message) {
+		super (message);
+	}
 
 	/**
-	 * Returns a tile.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return The tile.
+	 * Constructs a new UnknownTileException instance.
+	 * @param message The error message.
+	 * @param cause The error cause.
 	 */
-	public ITile getTile (short x, short y);
+	public UnknownTileException (String message, Throwable cause) {
+		super (message, cause);
+	}
 
 	/**
-	 * Returns the chunk width.
-	 * @return The width.
+	 * Constructs a new UnknownTileException instance.
+	 * @param cause The error cause.
 	 */
-	public short getWidth ();
+	public UnknownTileException (Throwable cause) {
+		super (cause);
+	}
 }

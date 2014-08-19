@@ -17,6 +17,7 @@ package org.evilco.bot.powersweeper.game;
 
 import lombok.Getter;
 import lombok.NonNull;
+import org.evilco.bot.powersweeper.game.tile.ITile;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -25,35 +26,24 @@ import lombok.NonNull;
 public class MatrixChunk implements IChunk {
 
 	/**
-	 * Stores the chunk X-Coordinate.
-	 */
-	@Getter
-	private final long chunkX;
-
-	/**
-	 * Stores the chunk Y-Coordinate.
-	 */
-	@Getter
-	private final long chunkY;
-
-	/**
-	 * Stores the height.
+	 * Stores the chunk height.
 	 */
 	@Getter
 	private final short height;
 
 	/**
-	 * Stores the field type.
+	 * Stores the chunk location.
 	 */
-	private FieldState type[][];
+	@Getter
+	private final ChunkLocation location;
 
 	/**
-	 * Stores the field value.
+	 * Stores all tiles.
 	 */
-	private short value[][];
+	private ITile[][] tiles;
 
 	/**
-	 * Stores the width.
+	 * Stores the chunk width.
 	 */
 	@Getter
 	private final short width;
@@ -62,13 +52,12 @@ public class MatrixChunk implements IChunk {
 	 * Constructs a new MatrixChunk instance.
 	 * @param width The width.
 	 * @param height The height.
+	 * @param location The location.
 	 */
-	public MatrixChunk (long x, long y, short width, short height) {
-		this.chunkX = x;
-		this.chunkY = y;
-
+	public MatrixChunk (short width, short height, @NonNull ChunkLocation location) {
 		this.width = width;
 		this.height = height;
+		this.location = location;
 
 		// reset
 		this.reset ();
@@ -78,52 +67,26 @@ public class MatrixChunk implements IChunk {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FieldState getField (short x, short y) {
-		return this.type[y][x];
+	public ITile getTile (short x, short y) {
+		return this.tiles[y][x];
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Resets the chunk.
 	 */
-	@Override
-	public short getUncoveredValue (short x, short y) {
-		return this.value[y][x];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void reset () {
-		// reset root
-		this.type = new FieldState[this.height][];
-		this.value = new short[this.height][];
+		this.tiles = new ITile[this.height][];
 
-		// reset rows
-		for (short y = 0; y < this.height; y++) {
-			this.type[y] = new FieldState[this.width];
-			this.value[y] = new short[this.width];
-
-			for (short x = 0; x < this.width; x++) {
-				this.setField (x, y, FieldState.UNTOUCHED);
-				this.setValue (x, y, ((short) -1));
-			}
-		}
+		for (short y = 0; y < this.height; y++) this.tiles[y] = new ITile[this.width];
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Sets a new tile.
+	 * @param x The X-Coordinate.
+	 * @param y The Y-Coordinate.
+	 * @param tile The new tile.
 	 */
-	@Override
-	public void setField (short x, short y, @NonNull FieldState fieldState) {
-		this.type[y][x] = fieldState;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setValue (short x, short y, short value) {
-		this.value[y][x] = value;
+	public void setTile (short x, short y, ITile tile) {
+		this.tiles[y][x] = tile;
 	}
 }

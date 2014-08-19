@@ -13,39 +13,45 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.game;
+package org.evilco.bot.powersweeper.game.error;
 
-import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.error.SweeperException;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IChunk {
+public abstract class GameException extends SweeperException {
 
 	/**
-	 * Returns the chunk height.
-	 * @return The height.
+	 * Constructs a new GameException instance.
 	 */
-	public short getHeight ();
+	public GameException () {
+		super ();
+	}
 
 	/**
-	 * Returns the chunk location.
-	 * @return The location.
+	 * Constructs a new GameException instance.
+	 * @param message The error message.
 	 */
-	public ChunkLocation getLocation ();
+	public GameException (String message) {
+		super (message);
+	}
 
 	/**
-	 * Returns a tile.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return The tile.
+	 * Constructs a new GameException instance.
+	 * @param message The error message.
+	 * @param cause The error cause.
 	 */
-	public ITile getTile (short x, short y);
+	public GameException (String message, Throwable cause) {
+		super (message, cause);
+	}
 
 	/**
-	 * Returns the chunk width.
-	 * @return The width.
+	 * Constructs a new GameException instance.
+	 * @param cause The error cause.
 	 */
-	public short getWidth ();
+	public GameException (Throwable cause) {
+		super (cause);
+	}
 }

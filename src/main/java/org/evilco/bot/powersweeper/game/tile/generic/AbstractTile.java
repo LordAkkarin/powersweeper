@@ -13,39 +13,42 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.game;
+package org.evilco.bot.powersweeper.game.tile.generic;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IChunk {
+@RequiredArgsConstructor
+@EqualsAndHashCode
+public class AbstractTile implements ITile {
 
 	/**
-	 * Returns the chunk height.
-	 * @return The height.
+	 * Stores the tile location.
 	 */
-	public short getHeight ();
+	@Getter
+	@NonNull
+	private final TileLocation location;
 
 	/**
-	 * Returns the chunk location.
-	 * @return The location.
+	 * Stores the source tile template.
 	 */
-	public ChunkLocation getLocation ();
+	@Getter
+	private final ITileTemplate template;
 
 	/**
-	 * Returns a tile.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return The tile.
+	 * Stores the parent parser.
 	 */
-	public ITile getTile (short x, short y);
-
-	/**
-	 * Returns the chunk width.
-	 * @return The width.
-	 */
-	public short getWidth ();
+	@Getter
+	@NonNull
+	private final ITileParser parser;
 }

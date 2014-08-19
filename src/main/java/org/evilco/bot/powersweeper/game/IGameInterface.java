@@ -15,6 +15,8 @@
 
 package org.evilco.bot.powersweeper.game;
 
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
@@ -22,37 +24,31 @@ package org.evilco.bot.powersweeper.game;
 public interface IGameInterface {
 
 	/**
-	 * Flags a field.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return True if the field was flagged.
+	 * Flags a tile.
+	 * @param location The tile location.
 	 */
-	public boolean flagField (short x, short y);
+	public void flagTile (TileLocation location);
 
 	/**
-	 * Returns the current chunk.
+	 * Returns the underlying chunk.
 	 * @return The chunk.
 	 */
-	public IChunk getCurrentChunk ();
+	public IChunk getChunk ();
 
 	/**
-	 * Moves the screen towards a new chunk.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
+	 * Moves the interface to a new chunk.
+	 * @param location The chunk location.
 	 */
-	public void move (long x, long y);
+	public void moveToChunk (ChunkLocation location);
 
 	/**
-	 * Uncovers a field.
-	 * @param x The X-Coordinate.
-	 * @param y The Y-Coordinate.
-	 * @return True if the field was uncovered.
+	 * Touches a tile.
+	 * @param location The tile location.
 	 */
-	public boolean uncoverField (short x, short y);
+	public void touchTile (TileLocation location);
 
 	/**
-	 * Updates the screen.
-	 * @return The current chunk instance.
+	 * Updates the game state.
 	 */
-	public IChunk update ();
+	public void update ();
 }

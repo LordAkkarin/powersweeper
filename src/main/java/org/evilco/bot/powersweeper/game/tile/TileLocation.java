@@ -13,19 +13,46 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.brain;
+package org.evilco.bot.powersweeper.game.tile;
 
-import org.evilco.bot.powersweeper.game.IGameInterface;
+import lombok.*;
+import org.evilco.bot.powersweeper.game.IChunk;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public interface IBrain {
+@AllArgsConstructor
+@EqualsAndHashCode
+public class TileLocation {
 
 	/**
-	 * Processes a single turn.
-	 * @param gameInterface The game interface.
+	 * Stores the X-Coordinate.
 	 */
-	public void think (IGameInterface gameInterface);
+	@Getter
+	@Setter
+	private short x;
+
+	/**
+	 * Stores the Y-Coordinate.
+	 */
+	@Getter
+	@Setter
+	private short y;
+
+	/**
+	 * Stores the chunk.
+	 */
+	@Getter
+	@Setter
+	@NonNull
+	private IChunk chunk;
+
+	/**
+	 * Returns the tile.
+	 * @return The tile.
+	 */
+	public ITile getTile () {
+		return this.chunk.getTile (this.getX (), this.getY ());
+	}
 }

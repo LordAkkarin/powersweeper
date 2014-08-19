@@ -13,17 +13,25 @@
  * limitations under the License.
  */
 
-package org.evilco.bot.powersweeper.game;
+package org.evilco.bot.powersweeper.game.tile.generic;
+
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
+import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public enum FieldState {
-	UNTOUCHED,
-	FLAGGED,
-	UNCOVERED,
-	NUMBER,
-	BOMB,
-	WAITING
+public class FlaggedTile extends AbstractTile {
+
+	/**
+	 * Constructs a new FlaggedTile instance.
+	 * @param location The tile location.
+	 * @param template The tile template.
+	 * @param parser The tile parser.
+	 */
+	public FlaggedTile (TileLocation location, ITileTemplate template, ITileParser parser) {
+		super (location, template, parser);
+	}
 }

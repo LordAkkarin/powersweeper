@@ -17,11 +17,10 @@ package org.evilco.bot.powersweeper.brain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.evilco.bot.powersweeper.game.IChunk;
 import org.evilco.bot.powersweeper.game.IGameInterface;
+import org.evilco.bot.powersweeper.game.tile.TileLocation;
 
 import java.util.Random;
 
@@ -41,19 +40,18 @@ public class IdiotBrain implements IBrain {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void think (@NonNull IChunk chunk, @NonNull IGameInterface gameInterface) {
+	public void think (IGameInterface gameInterface) {
 		// create a random
 		Random random = new Random ();
 
 		// select a random field within chunk bounds
-		short x = ((short) random.nextInt (chunk.getWidth ()));
-		short y = ((short) random.nextInt (chunk.getHeight ()));
+		short x = ((short) random.nextInt (gameInterface.getChunk ().getWidth ()));
+		short y = ((short) random.nextInt (gameInterface.getChunk ().getHeight ()));
 
 		// click random tile
-		boolean success = gameInterface.uncoverField (x, y);
-		// boolean success = gameInterface.flagField (x, y);
+		gameInterface.touchTile (new TileLocation (x, y, gameInterface.getChunk ()));
 
 		// log
-		getLogger ().info ("Uncovering field " + x + "," + y + " (success: " + success + ").");
+		getLogger ().info ("Uncovering field " + x + "," + y + ".");
 	}
 }
