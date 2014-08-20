@@ -237,7 +237,7 @@ public class Powersweeper {
 			// wait for some time
 			try {
 				// initialize variables
-				long waitTime = 550;
+				long waitTime = 750;
 
 				/*// get current average
 				long average = this.getAverageWaitTime ();
