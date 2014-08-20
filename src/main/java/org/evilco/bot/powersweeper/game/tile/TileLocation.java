@@ -18,6 +18,8 @@ package org.evilco.bot.powersweeper.game.tile;
 import lombok.*;
 import org.evilco.bot.powersweeper.game.IChunk;
 
+import java.util.ArrayList;
+
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
@@ -63,23 +65,23 @@ public class TileLocation {
      * @return The neighboring tiles of this TileLocation.
      */
     public ITile[] getNeighbors() {
-        ITile[] toReturn = new ITile[8];
+        ArrayList<ITile> neighbors = new ArrayList<>();
         //top
         if (y != 0) {
-            if (x != 0) toReturn[0] = chunk.getTile((short) (x - 1), (short) (y - 1));
-            toReturn[1] = chunk.getTile(x, (short) (y - 1));
-            if (x != chunk.getWidth() - 1) toReturn[2] = chunk.getTile((short) (x + 1), (short) (y - 1));
+            if (x != 0) neighbors.add(chunk.getTile((short) (x - 1), (short) (y - 1)));
+            neighbors.add(chunk.getTile(x, (short) (y - 1)));
+            if (x != chunk.getWidth() - 1) neighbors.add(chunk.getTile((short) (x + 1), (short) (y - 1)));
         }
         //middle
-        if (x != 0) toReturn[3] = chunk.getTile((short) (x - 1), y);
-        if (x != chunk.getWidth() - 1) toReturn[4] = chunk.getTile((short) (x + 1), y);
+        if (x != 0) neighbors.add(chunk.getTile((short) (x - 1), y));
+        if (x != chunk.getWidth() - 1) neighbors.add(chunk.getTile((short) (x + 1), y));
         //bottom
         if (y != chunk.getHeight() - 1) {
-            if (x != 0) toReturn[5] = chunk.getTile((short) (x - 1), (short) (y + 1));
-            toReturn[6] = chunk.getTile((x), (short) (y + 1));
-            if (x != chunk.getWidth() - 1) toReturn[7] = chunk.getTile((short) (x + 1), (short) (y + 1));
+            if (x != 0) neighbors.add(chunk.getTile((short) (x - 1), (short) (y + 1)));
+            neighbors.add(chunk.getTile((x), (short) (y + 1)));
+            if (x != chunk.getWidth() - 1) neighbors.add(chunk.getTile((short) (x + 1), (short) (y + 1)));
         }
-        return toReturn;
+        return neighbors.toArray(new ITile[neighbors.size()]);
     }
 	/**
 	 * Returns a relative location.

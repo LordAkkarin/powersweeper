@@ -108,7 +108,6 @@ public class Powersweeper {
 
 			// set new level
 			config.getLoggerConfig (LogManager.ROOT_LOGGER_NAME).setLevel ((configuration.isTracingEnabled () ? Level.ALL : Level.DEBUG));
-
 			// update context
 			context.updateLoggers (config);
 		}
@@ -238,9 +237,9 @@ public class Powersweeper {
 			// wait for some time
 			try {
 				// initialize variables
-				long waitTime;
+				long waitTime = 550;
 
-				// get current average
+				/*// get current average
 				long average = this.getAverageWaitTime ();
 
 				// get wait time depending on current average
@@ -253,7 +252,7 @@ public class Powersweeper {
 				this.addWaitTime (waitTime);
 
 				// trace
-				getLogger ().trace ("Waiting for " + waitTime + " ms to ensure we're not being detected (average is " + average + " ms).");
+				getLogger ().trace ("Waiting for " + waitTime + " ms to ensure we're not being detected (average is " + average + " ms).");*/
 
 				// sleep
 				Thread.sleep (waitTime);

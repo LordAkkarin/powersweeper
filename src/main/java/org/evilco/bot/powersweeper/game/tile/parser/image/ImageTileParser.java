@@ -15,7 +15,6 @@
 
 package org.evilco.bot.powersweeper.game.tile.parser.image;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,8 +34,6 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -166,7 +163,7 @@ public class ImageTileParser implements ITileParser {
 		}
 
 		// warn
-		getLogger ().warn ("Could not find matching tile for location " + location.getX () + "," + location.getY () + " in chunk " + location.getChunk ().getLocation ().getX () + "," + location.getChunk ().getLocation ().getY () + ". Assuming flag.");
+		//getLogger ().warn ("Could not find matching tile for location " + location.getX () + "," + location.getY () + " in chunk " + location.getChunk ().getLocation ().getX () + "," + location.getChunk ().getLocation ().getY () + ". Assuming flag.");
 
 		// assume flag
 		return getLogger ().exit (new FlaggedTile (location, null, this));

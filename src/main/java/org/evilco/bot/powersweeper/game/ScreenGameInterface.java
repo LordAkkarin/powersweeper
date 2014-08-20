@@ -25,6 +25,7 @@ import org.evilco.bot.powersweeper.Powersweeper;
 import org.evilco.bot.powersweeper.game.tile.ITile;
 import org.evilco.bot.powersweeper.game.tile.TileLocation;
 import org.evilco.bot.powersweeper.game.tile.error.TileException;
+import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
 import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
 import org.evilco.bot.powersweeper.game.tile.parser.image.ImageTileParser;
 import org.evilco.bot.powersweeper.game.tile.parser.image.ImageTileTemplate;
@@ -38,6 +39,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -299,6 +301,21 @@ public class ScreenGameInterface implements IGameInterface {
 		// perform
 		actions.build ().perform ();
 	}
+
+    /**
+     * Touches a random tile on the grid.
+     */
+    public void touchRandomTile() {
+        Random r = new Random();
+        short x = (short) r.nextInt(chunk.getWidth());
+        short y = (short) r.nextInt(chunk.getHeight());
+        ITile tile = chunk.getTile(x, y);
+        if (tile instanceof UntouchedTile) {
+            touchTile(tile.getLocation());
+        } else {
+            touchRandomTile();
+        }
+    }
 
 	/**
 	 * {@inheritDoc}

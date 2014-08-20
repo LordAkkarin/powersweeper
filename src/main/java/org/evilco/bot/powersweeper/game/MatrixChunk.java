@@ -18,6 +18,7 @@ package org.evilco.bot.powersweeper.game;
 import lombok.Getter;
 import lombok.NonNull;
 import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -89,4 +90,18 @@ public class MatrixChunk implements IChunk {
 	public void setTile (short x, short y, ITile tile) {
 		this.tiles[y][x] = tile;
 	}
+
+    /**
+     * Checks to see if the screen is blank (or untouched).
+     * @return true if the screen is mostly untouched tiles.
+     */
+    public boolean isBlank() {
+        int count = 0;
+        for (ITile[] arr : tiles) {
+           for (ITile i : arr) {
+               if (i instanceof UntouchedTile) count++;
+           }
+        }
+        return count > 250;
+    }
 }
