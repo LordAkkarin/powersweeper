@@ -68,25 +68,21 @@ public class ImageTileParser implements ITileParser {
 	 */
 	static {
 		// create builders
-		// ImmutableMap.Builder<String, ImageTileTemplate> templateBuilder = new ImmutableMap.Builder<> ();
-		// ImmutableMap.Builder<String, Class<? extends ITile>> tileBuilder = new ImmutableBiMap.Builder<> ();
-
-		// create maps
-		TEMPLATES = new LinkedHashMap<> ();
-		TILES = new LinkedHashMap<> ();
+		ImmutableMap.Builder<String, ImageTileTemplate> templateBuilder = new ImmutableMap.Builder<> ();
+		ImmutableMap.Builder<String, Class<? extends ITile>> tileBuilder = new ImmutableMap.Builder<> ();
 
 		// load waiting
 		try {
-			TEMPLATES.put ("waiting", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/waiting.png")), "waiting"));
-			TILES.put ("waiting", WaitingTile.class);
+			templateBuilder.put ("waiting", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/waiting.png")), "waiting"));
+			tileBuilder.put ("waiting", WaitingTile.class);
 		} catch (IOException ex) {
 			getLogger ().warn ("Could not load tile \"waiting.png\": " + ex.getMessage ());
 		}
 
 		// load untouched
 		try {
-			TEMPLATES.put ("untouched", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/untouched.png")), "untouched"));
-			TILES.put ("untouched", UntouchedTile.class);
+			templateBuilder.put ("untouched", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/untouched.png")), "untouched"));
+			tileBuilder.put ("untouched", UntouchedTile.class);
 		} catch (IOException ex) {
 			getLogger ().warn ("Could not load tile \"bomb.png\": " + ex.getMessage ());
 		}
@@ -94,8 +90,8 @@ public class ImageTileParser implements ITileParser {
 		// load numbers
 		for (short i = 0; i <= 8; i++) {
 			try {
-				TEMPLATES.put ("number-" + i, new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/number-" + i + ".png")), "number-" + i));
-				TILES.put ("number-" + i, NumberTile.class);
+				templateBuilder.put ("number-" + i, new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/number-" + i + ".png")), "number-" + i));
+				tileBuilder.put ("number-" + i, NumberTile.class);
 			} catch (Exception ex) {
 				getLogger ().warn ("Could not load tile \"number-" + i + ".png\": " + ex.getMessage ());
 			}
@@ -103,15 +99,15 @@ public class ImageTileParser implements ITileParser {
 
 		// load bomb
 		try {
-			TEMPLATES.put ("bomb", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/bomb.png")), "bomb"));
-			TILES.put ("bomb", BombTile.class);
+			templateBuilder.put ("bomb", new ImageTileTemplate (ImageIO.read (ImageTileParser.class.getResourceAsStream ("/tile/bomb.png")), "bomb"));
+			tileBuilder.put ("bomb", BombTile.class);
 		} catch (Exception ex) {
 			getLogger ().warn ("Could not load tile \"bomb.png\": " + ex.getMessage ());
 		}
 
 		// build map
-		/* TEMPLATES = templateBuilder.build ();
-		TILES = tileBuilder.build (); */
+		TEMPLATES = templateBuilder.build ();
+		TILES = tileBuilder.build ();
 	}
 
 	/**

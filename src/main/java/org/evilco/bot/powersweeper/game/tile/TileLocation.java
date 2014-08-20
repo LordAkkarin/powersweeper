@@ -26,27 +26,27 @@ import org.evilco.bot.powersweeper.game.IChunk;
 @EqualsAndHashCode
 public class TileLocation {
 
-    /**
-     * Stores the X-Coordinate.
-     */
-    @Getter
-    @Setter
-    private short x;
+	/**
+	 * Stores the X-Coordinate.
+	 */
+	@Getter
+	@Setter
+	private short x;
 
-    /**
-     * Stores the Y-Coordinate.
-     */
-    @Getter
-    @Setter
-    private short y;
+	/**
+	 * Stores the Y-Coordinate.
+	 */
+	@Getter
+	@Setter
+	private short y;
 
-    /**
-     * Stores the chunk.
-     */
-    @Getter
-    @Setter
-    @NonNull
-    private IChunk chunk;
+	/**
+	 * Stores the chunk.
+	 */
+	@Getter
+	@Setter
+	@NonNull
+	private IChunk chunk;
 
     /**
      * Returns the tile.
@@ -81,4 +81,13 @@ public class TileLocation {
         }
         return toReturn;
     }
+	/**
+	 * Returns a relative location.
+	 * @param x The X-Offset.
+	 * @param y The Y-Offset.
+	 * @return The relative tile.
+	 */
+	public TileLocation getRelative (short x, short y) {
+		return (new TileLocation (((short) (this.getX () + x)), ((short) (this.getY () + y)), this.getChunk ()));
+	}
 }

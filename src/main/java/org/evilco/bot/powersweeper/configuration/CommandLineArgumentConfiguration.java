@@ -55,6 +55,7 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 							.addOption (OptionBuilder.withLongOpt ("debug").create ())
 							.addOption (OptionBuilder.withLongOpt ("dumpunknowntiles").create ())
 							.addOption (OptionBuilder.withLongOpt ("driver").hasArg ().create ())
+							.addOption (OptionBuilder.withLongOpt ("trace").create ())
 							.addOption (OptionBuilder.hasArg ().create ("x"))
 							.addOption (OptionBuilder.hasArg ().create ("y"));
 
@@ -135,6 +136,14 @@ public class CommandLineArgumentConfiguration implements IConfiguration {
 	@Override
 	public boolean isNativeDownloadEnabled () {
 		return !this.commandLine.hasOption ("nonativedownload");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTracingEnabled () {
+		return this.commandLine.hasOption ("trace");
 	}
 
 	/**

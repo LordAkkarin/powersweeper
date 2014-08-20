@@ -74,4 +74,10 @@ public interface IConfiguration {
 	 * @return True if download is enabled.
 	 */
 	public boolean isNativeDownloadEnabled ();
+
+	/**
+	 * Checks whether trace log messages are enabled.
+	 * @return True if trace messages are enabled.
+	 */
+	public boolean isTracingEnabled ();
 }
