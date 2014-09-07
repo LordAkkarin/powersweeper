@@ -39,44 +39,72 @@ public class SmartBrain implements IBrain {
          * (or flags) around it, as WELL as having some blank tiles around it.
          */
         MatrixChunk chunk = (MatrixChunk) gameInterface.getChunk();
-        for (short s = 0; s < chunk.getWidth(); s++) {
-            for (short s1 = 0; s1 < chunk.getHeight(); s1++) {
-                ITile tile = chunk.getTile(s, s1);
+        NumberTile[] numberTiles = chunk.getNumberTiles();
 
-                if (tile instanceof NumberTile) {
-                    NumberTile nt = (NumberTile) tile;
-                    short value = nt.getValue();
-                    ITile[] neighbors = tile.getLocation().getNeighbors();
-                    if (neighbors.length < 6) continue;
-                    int bombCount = 0;
-                    bombCount += getCount(neighbors, TileType.BOMB);
-                    bombCount += getCount(neighbors, TileType.FLAG);
-
-                    if (bombCount == value) {
-                        if (getCount(neighbors, TileType.BLANK) > 0) {
-                            gameInterface.touchTile(tile.getLocation());
-                            return;
-                        }
-                    } else {
-                        if (value == 1 && getCount(neighbors, TileType.BLANK) == 1) {
-                            gameInterface.flagTile(tile.getLocation());
-                            return;
-                        }
-                        if (bombCount == (value - 1) && getCount(neighbors, TileType.BLANK) == 1) {
-                            gameInterface.flagTile(tile.getLocation());
-                            return;
-                        }
-                    }
+        if (numberTiles.length > 50) {
+            for (NumberTile nt : numberTiles) {
+                if (handleNumberTile(gameInterface, nt)) {
+                    return;
                 }
             }
+        } else {
+            if (numberTiles.length > 0) {
+                for (NumberTile nt : numberTiles) {
+                    if (!handleNumberTile(gameInterface, nt)) {//this is expected to not work, but cool if it does
+                        ITile[] neighbors = nt.getLocation().getNeighbors();
+                        if (neighbors.length > 5) {
+                            if (getCount(neighbors, TileType.BLANK) > nt.getValue()) {
+                                gameInterface.touchTile(nt.getLocation().getBlankNeighbor().getLocation());
+                                return;
+                            }
+                        }
+                    } else {
+                        return;
+                    }
+                }
+            } else {
+                ((ScreenGameInterface)gameInterface).touchRandomTile();
+                return;
+            }
         }
-        if ((chunk).isBlank()) {
+        if (chunk.isBlank()) {
             //pick a random chunk and click
             ((ScreenGameInterface)gameInterface).touchRandomTile();
             return;
         }
         gameInterface.moveToChunk(chunk.getLocation().getRelative(1, 0));
 
+    }
+
+    public boolean handleNumberTile(IGameInterface gameInterface, NumberTile nt) {
+        short value = nt.getValue();
+        ITile[] neighbors = nt.getLocation().getNeighbors();
+        if (neighbors.length < 6) return false;
+        int bombCount = 0;
+        bombCount += getCount(neighbors, TileType.BOMB);
+        bombCount += getCount(neighbors, TileType.FLAG);
+        int blankCount = getCount(neighbors, TileType.BLANK);
+
+        if (bombCount == value) {//there's that many bombs around it
+            if (blankCount > 0) {
+                gameInterface.touchTile(nt.getLocation());
+                return true;
+            }
+        } else {//there's still some bombs, let's see if we can flag
+            if (value == 1 && blankCount == 1) {//easy corner picking
+                gameInterface.flagTile(nt.getLocation());
+                return true;
+            }
+            if (bombCount == (value - 1) && blankCount == 1) {//one blank left, has to be the bomb
+                gameInterface.flagTile(nt.getLocation());
+                return true;
+            }
+            if (blankCount > 0 && (bombCount + blankCount == value)) {//bombs and blanks add up to the number
+                gameInterface.flagTile(nt.getLocation());
+                return true;
+            }
+        }
+        return false;
     }
 
 

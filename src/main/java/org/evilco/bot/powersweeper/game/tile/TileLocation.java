@@ -17,6 +17,7 @@ package org.evilco.bot.powersweeper.game.tile;
 
 import lombok.*;
 import org.evilco.bot.powersweeper.game.IChunk;
+import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
 
 import java.util.ArrayList;
 
@@ -83,6 +84,18 @@ public class TileLocation {
         }
         return neighbors.toArray(new ITile[neighbors.size()]);
     }
+
+
+    public ITile getBlankNeighbor() {
+        ITile[] neighbors = getNeighbors();
+        if (neighbors.length > 0) {
+           for (ITile i : neighbors) {
+               if (i instanceof UntouchedTile) return i;
+           }
+        }
+        return null;
+    }
+
 	/**
 	 * Returns a relative location.
 	 * @param x The X-Offset.

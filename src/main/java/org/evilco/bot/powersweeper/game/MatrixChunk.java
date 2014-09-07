@@ -18,7 +18,10 @@ package org.evilco.bot.powersweeper.game;
 import lombok.Getter;
 import lombok.NonNull;
 import org.evilco.bot.powersweeper.game.tile.ITile;
+import org.evilco.bot.powersweeper.game.tile.generic.NumberTile;
 import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
+
+import java.util.ArrayList;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -103,5 +106,32 @@ public class MatrixChunk implements IChunk {
            }
         }
         return count > 250;
+    }
+
+    public NumberTile[] getNumberTiles() {
+        ArrayList<NumberTile> toReturn = new ArrayList<>();
+        for (ITile[] arr : tiles) {
+            for (ITile i : arr) {
+                if (i instanceof NumberTile) {
+                    toReturn.add((NumberTile)i);
+                }
+            }
+        }
+        return toReturn.toArray(new NumberTile[toReturn.size()]);
+    }
+
+    /**
+     * Finds the nearest number tile.
+     * @param number The number to look for.
+     * @return The tile if found, or null.
+     */
+    public NumberTile findNumberTile(short number) {
+        NumberTile[] numberTiles = getNumberTiles();
+        if (numberTiles.length > 0) {
+            for (NumberTile t : numberTiles) {
+                if (t.getValue() == number) return t;
+            }
+        }
+        return null;
     }
 }
