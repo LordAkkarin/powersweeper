@@ -15,7 +15,6 @@
 
 package org.evilco.bot.powersweeper.game.tile.generic;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
 @RequiredArgsConstructor
-@EqualsAndHashCode
 public class AbstractTile implements ITile {
 
 	/**
@@ -51,4 +49,9 @@ public class AbstractTile implements ITile {
 	@Getter
 	@NonNull
 	private final ITileParser parser;
+
+    @Override
+    public boolean equals(ITile other) {
+        return other.getLocation().equals(location);
+    }
 }

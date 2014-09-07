@@ -15,6 +15,7 @@
 
 package org.evilco.bot.powersweeper.game.tile.generic;
 
+import org.evilco.bot.powersweeper.game.tile.ITile;
 import org.evilco.bot.powersweeper.game.tile.TileLocation;
 import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
 import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
@@ -34,4 +35,9 @@ public class FlaggedTile extends AbstractTile {
 	public FlaggedTile (TileLocation location, ITileTemplate template, ITileParser parser) {
 		super (location, template, parser);
 	}
+
+    @Override
+    public boolean equals(ITile other) {
+        return other.getLocation().equals(this.getLocation());
+    }
 }

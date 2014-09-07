@@ -228,11 +228,20 @@ public class Powersweeper {
 			// trace
 			getLogger ().trace ("Entering processing loop.");
 
-			// update interface
-			this.gameInterface.update ();
+            //if it doesn't have a queue, or does have a queue and is empty
+            if (!gameInterface.hasQueue() || (gameInterface.hasQueue() && gameInterface.getActionQueue().isEmpty())) {
 
-			// call AI
-			this.brain.think (this.gameInterface);
+                // update interface
+                this.gameInterface.update();
+
+                // call AI
+                this.brain.think(this.gameInterface);
+
+            } else if (gameInterface.hasQueue() && !gameInterface.getActionQueue().isEmpty()) { //the queue exists and it has actions
+                //TODO update this to a Stack and do #pop() ?
+                gameInterface.getActionQueue().get(0).perform();//go one-by-one
+                gameInterface.getActionQueue().remove(0);
+            }
 
 			// wait for some time
 			try {

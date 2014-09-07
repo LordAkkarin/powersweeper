@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.evilco.bot.powersweeper.game.tile.ITile;
 import org.evilco.bot.powersweeper.game.tile.generic.NumberTile;
-import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
+import org.evilco.bot.powersweeper.game.tile.parser.TileCounter;
 
 import java.util.ArrayList;
 
@@ -101,9 +101,7 @@ public class MatrixChunk implements IChunk {
     public boolean isBlank() {
         int count = 0;
         for (ITile[] arr : tiles) {
-           for (ITile i : arr) {
-               if (i instanceof UntouchedTile) count++;
-           }
+           count += TileCounter.getCount(arr, TileCounter.TileType.BLANK);
         }
         return count > 250;
     }
@@ -131,6 +129,26 @@ public class MatrixChunk implements IChunk {
             for (NumberTile t : numberTiles) {
                 if (t.getValue() == number) return t;
             }
+        }
+        return null;
+    }
+
+    /**
+     * This method finds a viable number tile to start clicking neighbors of.
+     *
+     * Usually, this can be a "1" square with a bunch of blank neighbors to try clicking.
+     *
+     * @return A viable exploration tile, or null.
+     */
+    public NumberTile findViableExplorationTile() {
+        NumberTile[] numberTiles = getNumberTiles();
+        if (numberTiles.length > 0) {
+           for (NumberTile nt : numberTiles) {
+              ITile[] neighbors = nt.getLocation().getNeighbors();
+               if (neighbors.length > 5 && nt.getValue() < 4 && TileCounter.getCount(neighbors, TileCounter.TileType.BLANK) > 4) {
+                   return nt;
+               }
+           }
         }
         return null;
     }

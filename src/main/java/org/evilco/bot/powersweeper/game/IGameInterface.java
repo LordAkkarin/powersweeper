@@ -16,6 +16,9 @@
 package org.evilco.bot.powersweeper.game;
 
 import org.evilco.bot.powersweeper.game.tile.TileLocation;
+import org.openqa.selenium.interactions.Action;
+
+import java.util.ArrayList;
 
 /**
  * @author Johannes Donath <johannesd@evil-co.com>
@@ -51,4 +54,15 @@ public interface IGameInterface {
 	 * Updates the game state.
 	 */
 	public void update ();
+
+    /**
+     * Has an action Queue.
+     */
+    public boolean hasQueue();
+
+    /**
+     * Gets the action queue if it has one.
+     * @return Actions in an array list to cycle through.
+     */
+    public ArrayList<Action> getActionQueue();
 }

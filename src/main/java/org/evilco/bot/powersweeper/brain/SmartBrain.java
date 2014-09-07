@@ -8,10 +8,12 @@ import org.evilco.bot.powersweeper.game.IGameInterface;
 import org.evilco.bot.powersweeper.game.MatrixChunk;
 import org.evilco.bot.powersweeper.game.ScreenGameInterface;
 import org.evilco.bot.powersweeper.game.tile.ITile;
-import org.evilco.bot.powersweeper.game.tile.generic.BombTile;
-import org.evilco.bot.powersweeper.game.tile.generic.FlaggedTile;
 import org.evilco.bot.powersweeper.game.tile.generic.NumberTile;
 import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
+import org.evilco.bot.powersweeper.game.tile.parser.TileCounter;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Nick on 8/19/2014.
@@ -23,6 +25,9 @@ import org.evilco.bot.powersweeper.game.tile.generic.UntouchedTile;
  * while clearing spaces after the fact.
  */
 public class SmartBrain implements IBrain {
+
+    ArrayList<NumberTile> toFlag = new ArrayList<>();
+    ArrayList<NumberTile> toClear = new ArrayList<>();
 
     /**
      * Stores the internal logger instance.
@@ -40,105 +45,128 @@ public class SmartBrain implements IBrain {
          */
         MatrixChunk chunk = (MatrixChunk) gameInterface.getChunk();
         NumberTile[] numberTiles = chunk.getNumberTiles();
-
-        if (numberTiles.length > 50) {
-            for (NumberTile nt : numberTiles) {
-                if (handleNumberTile(gameInterface, nt)) {
-                    return;
-                }
-            }
-        } else {
-            if (numberTiles.length > 0) {
-                for (NumberTile nt : numberTiles) {
-                    if (!handleNumberTile(gameInterface, nt)) {//this is expected to not work, but cool if it does
-                        ITile[] neighbors = nt.getLocation().getNeighbors();
-                        if (neighbors.length > 5) {
-                            if (getCount(neighbors, TileType.BLANK) > nt.getValue()) {
-                                gameInterface.touchTile(nt.getLocation().getBlankNeighbor().getLocation());
-                                return;
-                            }
-                        }
-                    } else {
-                        return;
+        int initialSize = gameInterface.getActionQueue().size();
+        if (numberTiles.length > 0) {
+            if (handleNumberTiles(numberTiles, true)) {
+                if (!toFlag.isEmpty()) {
+                    sortCollectedTiles(toFlag, true);
+                    for (NumberTile nt : toFlag) {
+                        gameInterface.flagTile(nt.getLocation());
                     }
+                    toFlag.clear();
                 }
-            } else {
-                ((ScreenGameInterface)gameInterface).touchRandomTile();
+                if (!toClear.isEmpty()) {
+                    sortCollectedTiles(toClear, false);
+                    for (NumberTile nt : toClear) {
+                        gameInterface.touchTile(nt.getLocation());
+                    }
+                    toClear.clear();
+                }
                 return;
             }
-        }
-        if (chunk.isBlank()) {
-            //pick a random chunk and click
-            ((ScreenGameInterface)gameInterface).touchRandomTile();
+
+            if (initialSize == gameInterface.getActionQueue().size()) {//no growth
+                NumberTile nt = chunk.findViableExplorationTile();
+                if (nt != null) {
+                    gameInterface.touchTile(nt.getLocation().getBlankNeighbor().getLocation());
+                    return;
+                } else if (chunk.isBlank()) {
+                    ((ScreenGameInterface) gameInterface).touchRandomTile(null);
+                    return;
+                }
+            } else {
+                return;
+            }
+        } else {
+            ((ScreenGameInterface) gameInterface).touchRandomTile(null);
             return;
         }
         gameInterface.moveToChunk(chunk.getLocation().getRelative(1, 0));
 
     }
 
-    public boolean handleNumberTile(IGameInterface gameInterface, NumberTile nt) {
-        short value = nt.getValue();
-        ITile[] neighbors = nt.getLocation().getNeighbors();
-        if (neighbors.length < 6) return false;
-        int bombCount = 0;
-        bombCount += getCount(neighbors, TileType.BOMB);
-        bombCount += getCount(neighbors, TileType.FLAG);
-        int blankCount = getCount(neighbors, TileType.BLANK);
+    public boolean handleNumberTiles(NumberTile[] ntarr, boolean flagging) {
+        boolean flagged = false;
+        boolean marked = false;
+        for (NumberTile nt : ntarr) {
+            short value = nt.getValue();
+            ITile[] neighbors = nt.getLocation().getNeighbors();
+            if (neighbors.length < 6) continue;
+            int bombCount = 0;
+            bombCount += TileCounter.getCount(neighbors, TileCounter.TileType.BOMB);
+            bombCount += TileCounter.getCount(neighbors, TileCounter.TileType.FLAG);
+            int blankCount = TileCounter.getCount(neighbors, TileCounter.TileType.BLANK);
 
-        if (bombCount == value) {//there's that many bombs around it
-            if (blankCount > 0) {
-                gameInterface.touchTile(nt.getLocation());
-                return true;
-            }
-        } else {//there's still some bombs, let's see if we can flag
-            if (value == 1 && blankCount == 1) {//easy corner picking
-                gameInterface.flagTile(nt.getLocation());
-                return true;
-            }
-            if (bombCount == (value - 1) && blankCount == 1) {//one blank left, has to be the bomb
-                gameInterface.flagTile(nt.getLocation());
-                return true;
-            }
-            if (blankCount > 0 && (bombCount + blankCount == value)) {//bombs and blanks add up to the number
-                gameInterface.flagTile(nt.getLocation());
-                return true;
+            if (flagging) {//flagging first
+                if (bombCount != value) {
+                    if (value == 1 && blankCount == 1) {//easy corner picking
+                        toFlag.add(nt);
+                        flagged = true;
+                    }
+                    if (bombCount == (value - 1) && blankCount == 1) {//one blank left, has to be the bomb
+                        toFlag.add(nt);
+                        flagged = true;
+                    }
+                    if (blankCount > 0 && (bombCount + blankCount == value)) {//bombs and blanks add up to the number
+                        toFlag.add(nt);
+                        flagged = true;
+                    }
+                }
+            } else {
+                if (bombCount == value) {
+                    if (blankCount > 0) {
+                        toClear.add(nt);
+                        marked = true;
+                    }
+                }
             }
         }
-        return false;
+        if (flagging) {
+            return flagged || handleNumberTiles(ntarr, false);
+        } else {
+            return marked;
+        }
     }
 
 
-    public int getCount(ITile[] array, TileType type) {
-        int count = 0;
-        switch (type) {
-            case BOMB:
-                for (ITile i : array) {
-                    if (i != null && i instanceof BombTile) count++;
+    //This method will go through and compare every ITile to see if they don't overlap.
+    public void sortCollectedTiles(ArrayList<NumberTile> list, boolean flags) {
+        ArrayList<NumberTile> toRemove = new ArrayList<>();
+        if (!list.isEmpty()) {
+            Collections.sort(list);
+            Collections.reverse(list);
+            for (NumberTile nt : list) {
+                if (toRemove.contains(nt)) continue;
+                ITile[] neighbors = nt.getLocation().getNeighbors();
+                NumberTile[] possibleMatches = arrayContains(neighbors, list, flags, nt);
+                if (possibleMatches.length > 1) {
+                    Collections.addAll(toRemove, possibleMatches);
                 }
-                break;
-            case BLANK:
-                for (ITile i : array) {
-                    if (i != null && i instanceof UntouchedTile) count++;
+            }
+            if (!toRemove.isEmpty()) {
+                for (NumberTile nt : toRemove) {
+                    list.remove(nt);
                 }
-                break;
-            case NUMBER:
-                for (ITile i : array) {
-                    if (i != null && i instanceof NumberTile) count++;
-                }
-                break;
-            case FLAG:
-                for (ITile i : array) {
-                    if (i != null && i instanceof FlaggedTile) count++;
-                }
-                break;
+            }
         }
-        return count;
+        toRemove.clear();
     }
 
-    enum TileType {
-        BOMB,
-        BLANK,
-        NUMBER,
-        FLAG
+    //checks to see if the list contains any of the neighbors in the array
+    private NumberTile[] arrayContains(ITile[] array, ArrayList<NumberTile> list, boolean flags, NumberTile parent) {
+        ArrayList<NumberTile> toReturn = new ArrayList<>();
+        for (ITile t : array) {
+            if (parent != null && parent.equals(t)) continue;
+            if (flags) {
+               if (t instanceof UntouchedTile) {
+                  Collections.addAll(toReturn, arrayContains(t.getLocation().getNeighbors(), list, false, parent));
+               }
+            } else {
+                for (NumberTile nt : list) {
+                    if (nt.equals(t)) toReturn.add((NumberTile)t);
+                }
+            }
+        }
+        return toReturn.toArray(new NumberTile[toReturn.size()]);
     }
 }

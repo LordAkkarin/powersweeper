@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.evilco.bot.powersweeper.game.tile.ITile;
 import org.evilco.bot.powersweeper.game.tile.TileLocation;
 import org.evilco.bot.powersweeper.game.tile.parser.ITileParser;
 import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
@@ -27,7 +28,7 @@ import org.evilco.bot.powersweeper.game.tile.parser.ITileTemplate;
  * @author Johannes Donath <johannesd@evil-co.com>
  * @copyright Copyright (C) 2014 Evil-Co <http://www.evil-co.com>
  */
-public class NumberTile extends AbstractTile {
+public class NumberTile extends AbstractTile implements Comparable<NumberTile> {
 
 	/**
 	 * Stores the internal logger instance.
@@ -70,4 +71,20 @@ public class NumberTile extends AbstractTile {
 		// log
 		getLogger ().trace ("Set value to " + this.value + ".");
 	}
+
+    @Override
+    public int compareTo(NumberTile o) {
+        if (o.getValue() > this.getValue()) {
+            return -1;
+        } else if (o.getValue() == this.getValue()) return 0;
+        else return 1;
+    }
+
+    public boolean equals(ITile other) {
+        if (other instanceof NumberTile) {
+           if (other.getLocation().equals(this.getLocation()) &&
+                   ((NumberTile) other).getValue() == this.getValue()) return true;
+        }
+        return false;
+    }
 }

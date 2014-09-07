@@ -26,4 +26,6 @@ public interface ITile {
 	 * @return The location.
 	 */
 	public TileLocation getLocation ();
+
+    public boolean equals(ITile other);
 }
